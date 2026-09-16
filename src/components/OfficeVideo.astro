@@ -1,0 +1,141 @@
+---
+/**
+ * Vidéo d'ambiance des locaux : lecture automatique, en boucle et sans son.
+ * Le bouton de pause n'est pas décoratif — une animation qui dure plus de
+ * cinq secondes doit pouvoir être arrêtée (WCAG 2.2.2).
+ */
+import locaux from '../assets/brand/locaux.mp4';
+---
+
+<figure class="video">
+	<div class="video__frame">
+		<video
+			src={locaux}
+			autoplay
+			muted
+			loop
+			playsinline
+			preload="metadata"
+			width="1280"
+			height="720"
+			aria-label="Vidéo d'ambiance de nos locaux, sans son"></video>
+
+		<button type="button" class="video__toggle" data-video-toggle aria-label="Mettre la vidéo en pause">
+			<svg class="video__icon video__icon--pause" viewBox="0 0 24 24" aria-hidden="true">
+				<rect x="7" y="5" width="3.5" height="14" rx="1.2"></rect>
+				<rect x="13.5" y="5" width="3.5" height="14" rx="1.2"></rect>
+			</svg>
+			<svg class="video__icon video__icon--play" viewBox="0 0 24 24" aria-hidden="true">
+				<path d="M8 5.5v13a1 1 0 0 0 1.52.85l10.5-6.5a1 1 0 0 0 0-1.7L9.52 4.65A1 1 0 0 0 8 5.5Z"></path>
+			</svg>
+		</button>
+	</div>
+</figure>
+
+<script>
+	const moinsDAnimation = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+	document.querySelectorAll<HTMLButtonElement>('[data-video-toggle]').forEach((bouton) => {
+		const video = bouton.closest('.video__frame')?.querySelector('video');
+		if (!video) return;
+
+		const refleterEtat = () => {
+			const enPause = video.paused;
+			bouton.classList.toggle('is-paused', enPause);
+			bouton.setAttribute('aria-label', enPause ? 'Lire la vidéo' : 'Mettre la vidéo en pause');
+		};
+
+		bouton.addEventListener('click', () => {
+			if (video.paused) video.play();
+			else video.pause();
+		});
+
+		video.addEventListener('play', refleterEtat);
+		video.addEventListener('pause', refleterEtat);
+
+		// L'attribut `autoplay` du HTML sert les visiteurs sans JS ; ici on le
+		// rattrape pour celles et ceux qui ont demandé moins de mouvement.
+		if (moinsDAnimation.matches) video.pause();
+		refleterEtat();
+	});
+</script>
+
+<style>
+	.video {
+		margin: 0;
+		position: relative;
+	}
+
+	/* Losange décoratif décalé, repris de la palette prune de la marque. */
+	.video::before {
+		content: '';
+		position: absolute;
+		inset: auto -14px -14px auto;
+		width: min(45%, 180px);
+		aspect-ratio: 1;
+		border-radius: var(--bb-radius-lg);
+		background: linear-gradient(135deg, var(--bb-plum-500), var(--bb-orange));
+		opacity: 0.16;
+	}
+
+	.video__frame {
+		position: relative;
+		/* Passe au-dessus du carré décoratif sans recourir à un z-index négatif,
+		   qui serait masqué par le fond d'une section colorée. */
+		z-index: 1;
+		border-radius: var(--bb-radius-lg);
+		overflow: hidden;
+		box-shadow: var(--bb-shadow-lift);
+		/* Évite le flash blanc avant la première image décodée. */
+		background: linear-gradient(135deg, var(--bb-plum-900), var(--bb-plum-700));
+	}
+
+	.video__frame video {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+
+	.video__toggle {
+		position: absolute;
+		right: 0.75rem;
+		bottom: 0.75rem;
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 0;
+		border-radius: 999px;
+		background: rgb(41 16 70 / 55%);
+		backdrop-filter: blur(6px);
+		color: #fff;
+		cursor: pointer;
+		opacity: 0.75;
+		transition: opacity 0.15s ease, background 0.15s ease;
+	}
+
+	.video:hover .video__toggle,
+	.video__toggle:focus-visible {
+		opacity: 1;
+		background: rgb(41 16 70 / 75%);
+	}
+
+	.video__icon {
+		width: 20px;
+		height: 20px;
+		fill: currentColor;
+	}
+
+	.video__toggle .video__icon--play,
+	.video__toggle.is-paused .video__icon--pause {
+		display: none;
+	}
+
+	.video__toggle.is-paused .video__icon--play {
+		display: block;
+	}
+
+</style>

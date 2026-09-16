@@ -1,0 +1,181 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+	const actus = await getCollection('actus');
+	return actus.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry },
+	}));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, date, category, excerpt, cover, coverAlt, gallery } = entry.data;
+
+const dateLabel = date.toLocaleDateString('fr-FR', {
+	day: 'numeric',
+	month: 'long',
+	year: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={excerpt}>
+	<article class="actu">
+		<header class="actu__head">
+			<div class="container actu__head-inner">
+				<a href="/actus" class="actu__back">← Toutes les actus</a>
+				<p class="eyebrow">{category}</p>
+				<h1>{title}</h1>
+				<time datetime={date.toISOString()}>{dateLabel}</time>
+			</div>
+		</header>
+
+		{
+			cover && (
+				<div class="container">
+					<figure class="actu__cover">
+						<Image
+							src={cover}
+							alt={coverAlt ?? ''}
+							widths={[480, 800, 1200]}
+							sizes="(max-width: 1140px) 100vw, 1100px"
+							format="webp"
+							loading="eager"
+							fetchpriority="high"
+						/>
+					</figure>
+				</div>
+			)
+		}
+
+		<div class="container">
+			<div class="prose actu__body">
+				<Content />
+			</div>
+		</div>
+
+		{
+			gallery && gallery.length > 0 && (
+				<div class="container">
+					<section class="actu__gallery" aria-label="Galerie photos">
+						<h2>En images</h2>
+						<div class="gallery-grid">
+							{gallery.map((photo) => (
+								<figure>
+									<Image
+										src={photo.src}
+										alt={photo.caption ?? ''}
+										widths={[400, 800]}
+										sizes="(max-width: 620px) 100vw, 360px"
+										format="webp"
+										loading="lazy"
+									/>
+									{photo.caption && <figcaption>{photo.caption}</figcaption>}
+								</figure>
+							))}
+						</div>
+					</section>
+				</div>
+			)
+		}
+
+		<div class="container actu__footer">
+			<a href="/actus" class="btn btn--ghost">← Toutes les actus</a>
+		</div>
+	</article>
+</BaseLayout>
+
+<style>
+	.actu__head {
+		background: linear-gradient(180deg, #faf6fb, #fff);
+		padding-block: clamp(1.5rem, 1.1rem + 1.5vw, 2.25rem) clamp(1rem, 0.85rem + 1vw, 1.5rem);
+	}
+
+	.actu__head-inner {
+		max-width: 780px;
+	}
+
+	.actu__back {
+		display: inline-block;
+		font-family: var(--bb-font-head);
+		font-weight: 600;
+		font-size: 0.9rem;
+		text-decoration: none;
+		margin-bottom: 1rem;
+	}
+
+	.actu__head time {
+		color: var(--bb-muted);
+		font-size: 0.93rem;
+	}
+
+	.actu__cover {
+		margin: 0 0 1.5rem;
+		border-radius: var(--bb-radius-lg);
+		overflow: hidden;
+		box-shadow: var(--bb-shadow);
+	}
+
+	.actu__cover img {
+		width: 100%;
+		display: block;
+	}
+
+	.actu__body {
+		max-width: 68ch;
+		font-size: 1rem;
+	}
+
+	.actu__gallery {
+		max-width: 100%;
+		margin-top: 2.25rem;
+	}
+
+	.actu__gallery h2 {
+		font-size: 1.2rem;
+		margin-bottom: 1rem;
+	}
+
+	.gallery-grid {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 620px) {
+		.gallery-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 900px) {
+		.gallery-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.gallery-grid figure {
+		margin: 0;
+	}
+
+	.gallery-grid img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--bb-radius);
+		display: block;
+	}
+
+	.gallery-grid figcaption {
+		margin-top: 0.5rem;
+		font-size: 0.86rem;
+		color: var(--bb-muted);
+	}
+
+	.actu__footer {
+		margin-top: 2.25rem;
+	}
+</style>

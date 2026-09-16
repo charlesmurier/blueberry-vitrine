@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ActuCard from '../../components/ActuCard.astro';
+
+const actus = (await getCollection('actus')).sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout
+	title="L'actu"
+	description="Sorties, événements et vie d'équipe chez Blueberry Digital Services."
+>
+	<section class="page-head">
+		<div class="container">
+			<p class="eyebrow">L’actu Blueberry</p>
+			<h1>La vie de l’équipe</h1>
+			<p class="lead">
+				Sorties en bateau, journées au ski, Jeux de Sophia… Ce qui se passe chez nous quand on ne code
+				pas.
+			</p>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			{
+				actus.length > 0 ? (
+					<div class="grid grid--3">
+						{actus.map((entry, i) => (
+							<ActuCard entry={entry} eager={i === 0} />
+						))}
+					</div>
+				) : (
+					<p class="empty">Les premières actualités arrivent bientôt.</p>
+				)
+			}
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.page-head {
+		background: linear-gradient(180deg, #faf6fb, #fff);
+		padding-block: clamp(2rem, 1.6rem + 2vw, 3rem) clamp(1.25rem, 1rem + 1.5vw, 2rem);
+	}
+
+	.page-head .lead {
+		max-width: 58ch;
+	}
+
+	.empty {
+		color: var(--bb-muted);
+	}
+</style>

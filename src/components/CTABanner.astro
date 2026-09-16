@@ -1,0 +1,76 @@
+---
+interface Props {
+	title: string;
+	text?: string;
+	ctaLabel: string;
+	ctaHref: string;
+	secondaryLabel?: string;
+	secondaryHref?: string;
+}
+
+const { title, text, ctaLabel, ctaHref, secondaryLabel, secondaryHref } = Astro.props;
+---
+
+<section class="cta">
+	<div class="container">
+		<div class="cta__panel">
+			<h2>{title}</h2>
+			{text && <p>{text}</p>}
+			<div class="cta__actions">
+				<a href={ctaHref} class="btn btn--primary">{ctaLabel}</a>
+				{
+					secondaryLabel && secondaryHref && (
+						<a href={secondaryHref} class="btn btn--on-dark">
+							{secondaryLabel}
+						</a>
+					)
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.cta {
+		padding-block: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+	}
+
+	.cta__panel {
+		background: linear-gradient(135deg, var(--bb-plum-700), var(--bb-plum-900) 65%, #130920);
+		border-radius: var(--bb-radius-lg);
+		padding: clamp(1.5rem, 1.2rem + 2.5vw, 2.5rem);
+		text-align: center;
+		color: #fff;
+	}
+
+	.cta__panel h2 {
+		color: #fff;
+		max-width: 20ch;
+		margin-inline: auto;
+	}
+
+	.cta__panel p {
+		max-width: 52ch;
+		margin-inline: auto;
+		color: rgb(255 255 255 / 85%);
+	}
+
+	.cta__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		justify-content: center;
+		margin-top: 1.25rem;
+	}
+
+	.cta__actions .btn {
+		flex: 1 1 auto;
+		max-width: 320px;
+	}
+
+	@media (min-width: 560px) {
+		.cta__actions .btn {
+			flex: 0 0 auto;
+		}
+	}
+</style>

@@ -2,4 +2,6 @@
 node_modules/
 dist/
 build/
+.astro/
 .env
+.claude/settings.local.json

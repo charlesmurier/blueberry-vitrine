@@ -1,0 +1,148 @@
+---
+import { Image } from 'astro:assets';
+import { company, mapsUrl } from '../data/company';
+import logo from '../assets/brand/blueberry_digital_services_logo.svg';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<div class="container site-footer__inner">
+		<div class="site-footer__brand">
+			<Image src={logo} alt="Blueberry Digital Services" loading="lazy" class="site-footer__logo" />
+			<p class="site-footer__pitch">
+				Conseil en informatique et numérique à Sophia-Antipolis. Chez nous, l’humain passe avant tout.
+			</p>
+		</div>
+
+		<div class="site-footer__col">
+			<h2>Nous trouver</h2>
+			<address>
+				<a href={mapsUrl} target="_blank" rel="noopener">
+					{company.address.line1}<br />
+					{company.address.line2}<br />
+					{`${company.address.postcode} ${company.address.city}`}
+				</a>
+			</address>
+		</div>
+
+		<div class="site-footer__col">
+			<h2>Nous parler</h2>
+			<ul>
+				<li><a href={`mailto:${company.email}`}>{company.email}</a></li>
+				<li><a href={company.phoneLink}>{company.phoneDisplay}</a></li>
+				<li><a href={company.whatsapp} target="_blank" rel="noopener">WhatsApp</a></li>
+				<li><a href={company.linkedin} target="_blank" rel="noopener">LinkedIn</a></li>
+			</ul>
+		</div>
+
+		<div class="site-footer__col">
+			<h2>Le site</h2>
+			<ul>
+				<li><a href="/">Qui sommes-nous</a></li>
+				<li><a href="/actus">L’actu</a></li>
+				<li><a href="/nous-rejoindre">Nous rejoindre</a></li>
+				<li><a href="/contact">Contact</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="container site-footer__legal">
+		<p>© {year} {company.name}. Tous droits réservés.</p>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		background: linear-gradient(160deg, var(--bb-plum-900), #130920);
+		color: rgb(255 255 255 / 82%);
+		padding-block: clamp(2rem, 1.6rem + 2vw, 3rem) 1.25rem;
+		margin-top: clamp(2.25rem, 1.75rem + 2.5vw, 3.5rem);
+	}
+
+	.site-footer__inner {
+		display: grid;
+		gap: 1.5rem;
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 640px) {
+		.site-footer__inner {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 980px) {
+		.site-footer__inner {
+			grid-template-columns: 1.6fr 1fr 1fr 1fr;
+			gap: 2rem;
+		}
+	}
+
+	/* Le logo est prune et orange : illisible sur le fond sombre du pied de page.
+	   On le passe donc en blanc plein, comme le reste des libellés. */
+	.site-footer__logo {
+		display: block;
+		width: 210px;
+		height: auto;
+		margin-bottom: 0.9rem;
+		filter: brightness(0) invert(1);
+	}
+
+	.site-footer__pitch {
+		max-width: 34ch;
+		font-size: 0.93rem;
+		margin: 0;
+	}
+
+	.site-footer h2 {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--bb-gold);
+		margin: 0 0 0.9rem;
+	}
+
+	.site-footer ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.55rem;
+	}
+
+	.site-footer address {
+		font-style: normal;
+		font-size: 0.93rem;
+		line-height: 1.7;
+	}
+
+	.site-footer a {
+		color: rgb(255 255 255 / 82%);
+		font-size: 0.93rem;
+		text-decoration: none;
+	}
+
+	.site-footer a:hover {
+		color: #fff;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	.site-footer :where(a):focus-visible {
+		outline-color: var(--bb-gold);
+	}
+
+	.site-footer__legal {
+		margin-top: 2rem;
+		padding-top: 1rem;
+		border-top: 1px solid rgb(255 255 255 / 14%);
+	}
+
+	.site-footer__legal p {
+		margin: 0;
+		font-size: 0.82rem;
+		color: rgb(255 255 255 / 60%);
+	}
+</style>

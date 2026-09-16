@@ -1,0 +1,312 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectorCard from '../components/SectorCard.astro';
+import ActuCard from '../components/ActuCard.astro';
+import CTABanner from '../components/CTABanner.astro';
+import OfficeVideo from '../components/OfficeVideo.astro';
+import { sectors } from '../data/company';
+
+const dernieresActus = (await getCollection('actus'))
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+	.slice(0, 3);
+
+const valeurs = [
+	{
+		icon: '🤝',
+		name: 'Respect',
+		description:
+			'Chaque personne apporte une valeur unique à l’équipe, bien au-delà de son rôle professionnel.',
+	},
+	{
+		icon: '🎯',
+		name: 'Intégrité',
+		description:
+			'Des engagements tenus, une parole claire avec nos clients comme avec nos collaborateurs.',
+	},
+	{
+		icon: '💜',
+		name: 'Solidarité',
+		description:
+			'On avance ensemble. Les réussites comme les difficultés d’un projet se partagent.',
+	},
+];
+---
+
+<BaseLayout
+	title="Conseil en informatique et numérique à Sophia-Antipolis"
+	description="Blueberry Digital Services accompagne les projets technologiques exigeants dans l'automobile, la défense, l'espace et les télécommunications. Chez nous, l'humain passe avant tout."
+>
+	<section class="hero">
+		<div class="container hero__inner">
+			<div class="hero__text">
+				<p class="eyebrow">Qui sommes-nous</p>
+				<h1>Le numérique est <span>avant tout une aventure humaine</span></h1>
+				<p class="lead">
+					Blueberry Digital Services accompagne ses clients sur des projets technologiques exigeants.
+					Notre conviction est simple : le bien-être génère la performance, et l’humain passe avant
+					tout.
+				</p>
+				<div class="hero__actions">
+					<a href="/nous-rejoindre" class="btn btn--plum">Nous rejoindre</a>
+					<a href="#secteurs" class="btn btn--ghost">Nos secteurs</a>
+				</div>
+			</div>
+
+			<div class="hero__visual">
+				<OfficeVideo />
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container split">
+			<div class="prose">
+				<h2>Notre histoire</h2>
+				<p>
+					Depuis sa création, Blueberry Digital Services a adopté une approche singulière dans un
+					secteur qui l’est rarement : considérer que la performance d’un projet informatique tient
+					d’abord à celles et ceux qui le portent.
+				</p>
+				<p>
+					Nous considérons que chaque projet est avant tout une aventure humaine, où l’expérience et
+					les compétences de chaque individu sont essentielles pour réussir. C’est ce qui guide notre
+					manière de recruter, d’accompagner nos consultants et de travailler avec nos clients.
+				</p>
+
+				<h2>Une approche pragmatique</h2>
+				<p>
+					Nous aidons les managers et les équipes à anticiper les enjeux du numérique en leur
+					fournissant une expertise technique de pointe et une compréhension approfondie de leurs
+					besoins. Ensemble, nous concevons des solutions qui créent de la valeur pour tous les
+					acteurs impliqués.
+				</p>
+				<p>
+					Aujourd’hui, les besoins en matière d’applications vont bien au-delà de la simple
+					fonctionnalité : ils exigent des produits de qualité, robustes et sécurisés, capables de
+					s’adapter aux évolutions futures. Notre approche multi-spécialiste nous permet de proposer
+					une large gamme de services à forte valeur ajoutée dans <a href="#secteurs">
+						plusieurs secteurs d’activité
+					</a>.
+				</p>
+			</div>
+
+			<aside class="facts">
+				<h2 class="facts__title">En bref</h2>
+				<dl>
+					<div>
+						<dt>Métier</dt>
+						<dd>Conseil en informatique et numérique</dd>
+					</div>
+					<div>
+						<dt>Implantation</dt>
+						<dd>Mougins, Sophia-Antipolis (06)</dd>
+					</div>
+					<div>
+						<dt>Secteurs</dt>
+						<dd>Automotive · Défense · Espace · Télécommunications</dd>
+					</div>
+					<div>
+						<dt>Ce qui nous distingue</dt>
+						<dd>Le bien-être génère la performance</dd>
+					</div>
+				</dl>
+			</aside>
+		</div>
+	</section>
+
+	<section class="section section--soft">
+		<div class="container">
+			<div class="section__intro">
+				<p class="eyebrow">Ce qui nous tient</p>
+				<h2>Nos valeurs</h2>
+			</div>
+			<div class="grid grid--3">
+				{
+					valeurs.map((valeur) => (
+						<article class="card">
+							<div class="card__icon" aria-hidden="true">
+								{valeur.icon}
+							</div>
+							<h3>{valeur.name}</h3>
+							<p class="muted">{valeur.description}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<section class="section" id="secteurs">
+		<div class="container">
+			<div class="section__intro">
+				<p class="eyebrow">Notre expertise</p>
+				<h2>Nos secteurs d’activité</h2>
+				<p class="lead">
+					Une approche multi-spécialiste qui nous permet de proposer des services à forte valeur
+					ajoutée dans des domaines où la qualité, la robustesse et la sécurité ne sont pas
+					négociables.
+				</p>
+			</div>
+
+			<div class="grid grid--4">
+				{sectors.map((sector) => <SectorCard {...sector} />)}
+			</div>
+		</div>
+	</section>
+
+	{
+		dernieresActus.length > 0 && (
+			<section class="section section--soft">
+				<div class="container">
+					<div class="actus-head">
+						<div class="section__intro">
+							<p class="eyebrow">L’actu Blueberry</p>
+							<h2>La vie de l’équipe</h2>
+							<p class="lead">
+								Sorties, événements, moments partagés : ce qui se passe chez nous quand on ne code
+								pas.
+							</p>
+						</div>
+						<a href="/actus" class="btn btn--ghost actus-head__link">
+							Toutes les actus
+						</a>
+					</div>
+
+					<div class="grid grid--3">
+						{dernieresActus.map((entry, i) => (
+							<ActuCard entry={entry} eager={i === 0} />
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	<CTABanner
+		title="Vous cherchez un nouveau défi professionnel ?"
+		text="Nous recrutons des profils curieux et exigeants, avec une rémunération au-dessus du prix du marché et des projets qui comptent."
+		ctaLabel="Découvrir Blueberry"
+		ctaHref="/nous-rejoindre"
+		secondaryLabel="Nous écrire"
+		secondaryHref="/contact"
+	/>
+</BaseLayout>
+
+<style>
+	.hero {
+		background:
+			radial-gradient(120% 90% at 85% 10%, #f3ebf7 0%, transparent 60%),
+			linear-gradient(180deg, #fdfbfe, #fff);
+		padding-block: clamp(2rem, 1.4rem + 3.5vw, 3.75rem);
+		overflow: hidden;
+	}
+
+	.hero__inner {
+		display: grid;
+		gap: 1.25rem;
+		align-items: center;
+	}
+
+	.hero h1 span {
+		color: var(--bb-plum-700);
+	}
+
+	.hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		margin-top: 1.25rem;
+	}
+
+	/* Sur mobile la vidéo prend toute la largeur : la rétrécir comme on le
+	   faisait pour la mascotte rendrait la scène illisible. */
+	.hero__visual {
+		order: -1;
+		max-width: 480px;
+		margin-inline: auto;
+	}
+
+	@media (min-width: 900px) {
+		.hero__inner {
+			grid-template-columns: 1.05fr 0.95fr;
+			gap: 2rem;
+		}
+
+		.hero__visual {
+			order: 0;
+			max-width: 420px;
+		}
+	}
+
+	.split {
+		display: grid;
+		gap: 1.5rem;
+	}
+
+	@media (min-width: 900px) {
+		.split {
+			grid-template-columns: 1.5fr 1fr;
+			gap: 2.25rem;
+			align-items: start;
+		}
+	}
+
+	.facts {
+		background: var(--bb-bg-lav);
+		border-radius: var(--bb-radius-lg);
+		padding: 1.5rem;
+	}
+
+	.facts__title {
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--bb-plum-700);
+		margin-bottom: 1rem;
+	}
+
+	.facts dl {
+		margin: 0;
+		display: grid;
+		gap: 0.9rem;
+	}
+
+	.facts dt {
+		font-size: 0.78rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--bb-muted);
+		margin-bottom: 0.2rem;
+	}
+
+	.facts dd {
+		margin: 0;
+		font-family: var(--bb-font-head);
+		font-weight: 600;
+		color: var(--bb-plum-900);
+	}
+
+	.muted {
+		color: var(--bb-muted);
+		font-size: 0.95rem;
+	}
+
+	.actus-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.actus-head .section__intro {
+		margin-bottom: 1.25rem;
+	}
+
+	.actus-head__link {
+		flex-shrink: 0;
+	}
+</style>

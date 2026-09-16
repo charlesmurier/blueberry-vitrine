@@ -1,0 +1,31 @@
+---
+interface Props {
+	icon: string;
+	name: string;
+	description: string;
+}
+
+const { icon, name, description } = Astro.props;
+---
+
+<article class="card sector">
+	<div class="card__icon" aria-hidden="true">{icon}</div>
+	<h3>{name}</h3>
+	<p>{description}</p>
+</article>
+
+<style>
+	.sector {
+		transition: transform 0.18s ease, box-shadow 0.18s ease;
+	}
+
+	.sector:hover {
+		transform: translateY(-3px);
+		box-shadow: var(--bb-shadow-lift);
+	}
+
+	.sector p {
+		color: var(--bb-muted);
+		font-size: 0.95rem;
+	}
+</style>

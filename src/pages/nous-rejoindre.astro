@@ -1,0 +1,230 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import mascotte from '../assets/brand/mascotte.png';
+import { company } from '../data/company';
+
+const atouts = [
+	{
+		icon: '🏆',
+		name: 'Rémunération au-dessus du marché',
+		description:
+			'Les meilleurs talents méritent les meilleures récompenses. Nous assumons une politique salariale supérieure aux taux du marché.',
+	},
+	{
+		icon: '🚀',
+		name: 'Des projets qui comptent',
+		description:
+			'Automobile, défense, espace, télécommunications : des sujets techniques exigeants, pour des clients qui ne se contentent pas d’à-peu-près.',
+	},
+	{
+		icon: '📈',
+		name: 'Montée en compétences',
+		description:
+			'Un accompagnement dans la durée pour faire grandir votre expertise, pas seulement pour remplir une mission.',
+	},
+	{
+		icon: '🌊',
+		name: 'Sophia-Antipolis',
+		description:
+			'La première technopole d’Europe, entre mer et arrière-pays. Le cadre de travail compte autant que le poste.',
+	},
+];
+
+const objet = encodeURIComponent('Candidature spontanée');
+const corps = encodeURIComponent(
+	"Bonjour,\n\nJe vous écris pour une candidature spontanée.\n\nPoste recherché :\nDisponibilité :\n\n(Pensez à joindre votre CV à ce message.)\n\nCordialement,"
+);
+---
+
+<BaseLayout
+	title="Nous rejoindre"
+	description="Vous cherchez un nouveau défi professionnel et une rémunération au-dessus du prix du marché ? Blueberry Digital Services recrute à Sophia-Antipolis."
+>
+	<section class="join-hero">
+		<div class="container join-hero__inner">
+			<div>
+				<p class="eyebrow">Nous rejoindre</p>
+				<h1>Rejoignez l’équipe de <span>Blueberry Digital</span></h1>
+				<p class="lead">
+					Façonnez l’avenir du numérique. Nous recherchons des personnes curieuses, rigoureuses et
+					qui ont envie de construire — bien au-delà de leur fiche de poste.
+				</p>
+				<div class="join-hero__actions">
+					<a href="#candidater" class="btn btn--primary">Envoyer une candidature</a>
+					<a href={company.linkedin} class="btn btn--ghost" target="_blank" rel="noopener">
+						Nous suivre sur LinkedIn
+					</a>
+				</div>
+			</div>
+
+			<div class="join-hero__visual">
+				<Image
+					src={mascotte}
+					alt=""
+					widths={[280, 480, 700]}
+					sizes="(max-width: 900px) 55vw, 340px"
+					format="webp"
+					loading="eager"
+					class="blend-white"
+				/>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<div class="section__intro">
+				<p class="eyebrow">Pourquoi nous rejoindre</p>
+				<h2>Ce que nous vous offrons</h2>
+				<p class="lead">
+					Nous croyons que chaque personne apporte une valeur unique à notre équipe. Notre ambition
+					est de vous offrir une expérience professionnelle stimulante et épanouissante.
+				</p>
+			</div>
+
+			<div class="grid grid--2">
+				{
+					atouts.map((atout) => (
+						<article class="card">
+							<div class="card__icon" aria-hidden="true">
+								{atout.icon}
+							</div>
+							<h3>{atout.name}</h3>
+							<p class="muted">{atout.description}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<section class="section section--soft">
+		<div class="container env">
+			<div class="prose">
+				<p class="eyebrow">Notre environnement</p>
+				<h2>Le bien-être génère la performance</h2>
+				<p>
+					Nous croyons que l’avenir de l’entreprise est ouvert et collaboratif. Concrètement : une
+					structure à taille humaine où l’on connaît tout le monde, des décisions qui ne mettent pas
+					six mois à être prises, et une direction accessible.
+				</p>
+				<p>
+					Le reste se raconte mieux en images : sorties en bateau, journées au ski, Jeux de
+					Sophia… <a href="/actus">la vie de l’équipe est sur la page actu</a>.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section" id="candidater">
+		<div class="container">
+			<div class="apply">
+				<h2>Postuler chez Blueberry</h2>
+				<p class="apply__note">
+					Nous n’avons pas de liste d’offres en ligne : nos besoins évoluent au rythme de nos projets
+					et nous préférons étudier chaque profil individuellement. Écrivez-nous en nous disant ce que
+					vous cherchez, et joignez votre CV.
+				</p>
+				<div class="apply__actions">
+					<a href={`mailto:${company.email}?subject=${objet}&body=${corps}`} class="btn btn--primary">
+						Écrire à {company.email}
+					</a>
+					<a href={company.whatsapp} class="btn btn--ghost" target="_blank" rel="noopener">
+						Nous joindre sur WhatsApp
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.join-hero {
+		background:
+			radial-gradient(110% 85% at 88% 15%, #f4ecf8 0%, transparent 62%),
+			linear-gradient(180deg, #fdfbfe, #fff);
+		padding-block: clamp(2rem, 1.4rem + 3.5vw, 3.5rem);
+		overflow: hidden;
+	}
+
+	.join-hero__inner {
+		display: grid;
+		gap: 1.25rem;
+		align-items: center;
+	}
+
+	.join-hero h1 span {
+		color: var(--bb-plum-700);
+	}
+
+	.join-hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		margin-top: 1.25rem;
+	}
+
+	.join-hero__visual {
+		order: -1;
+		text-align: center;
+	}
+
+	.join-hero__visual img {
+		width: min(55vw, 260px);
+		height: auto;
+	}
+
+	@media (min-width: 900px) {
+		.join-hero__inner {
+			grid-template-columns: 1.15fr 0.85fr;
+			gap: 2rem;
+		}
+
+		.join-hero__visual {
+			order: 0;
+		}
+
+		.join-hero__visual img {
+			width: 100%;
+			max-width: 340px;
+		}
+	}
+
+	.env .prose {
+		max-width: 68ch;
+	}
+
+	.muted {
+		color: var(--bb-muted);
+		font-size: 0.95rem;
+	}
+
+	.apply {
+		border: 1px solid var(--bb-border);
+		border-radius: var(--bb-radius-lg);
+		background: #fff;
+		box-shadow: var(--bb-shadow);
+		padding: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
+		text-align: center;
+	}
+
+	.apply__note {
+		max-width: 60ch;
+		margin-inline: auto;
+		color: var(--bb-muted);
+	}
+
+	.apply__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		justify-content: center;
+		margin-top: 1.25rem;
+	}
+
+	.apply__actions .btn {
+		max-width: 100%;
+		overflow-wrap: anywhere;
+	}
+</style>
