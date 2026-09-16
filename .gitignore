@@ -5,3 +5,6 @@ build/
 .astro/
 .env
 .claude/settings.local.json
+
+# Local Netlify folder
+.netlify
