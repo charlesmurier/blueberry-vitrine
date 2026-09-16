@@ -1,10 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ActuCard from '../../components/ActuCard.astro';
+import Scribble from '../../components/Scribble.astro';
+import photographe from '../../assets/illus/actu-photographe.png';
 
 const actus = (await getCollection('actus')).sort(
 	(a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+/* Les filtres se déduisent des articles publiés : une catégorie sans article
+   ne doit pas apparaître, et un ajout dans le CMS n'exige aucune retouche ici. */
+const categories = [...new Set(actus.map((entry) => entry.data.category))].sort((a, b) =>
+	a.localeCompare(b, 'fr')
 );
 ---
 
@@ -13,13 +22,28 @@ const actus = (await getCollection('actus')).sort(
 	description="Sorties, événements et vie d'équipe chez Blueberry Digital Services."
 >
 	<section class="page-head">
-		<div class="container">
-			<p class="eyebrow">L’actu Blueberry</p>
-			<h1>La vie de l’équipe</h1>
-			<p class="lead">
-				Sorties en bateau, journées au ski, Jeux de Sophia… Ce qui se passe chez nous quand on ne code
-				pas.
-			</p>
+		<div class="container page-head__inner">
+			<div>
+				<p class="eyebrow">L’actu Blueberry</p>
+				<h1>La vie de l’<span class="accent-word">équipe</span></h1>
+				<p class="lead">
+					Sorties en bateau, journées au ski, Jeux de Sophia… Ce qui se passe chez nous quand on ne
+					code pas.
+				</p>
+			</div>
+
+			<div class="page-head__visual">
+				<Image
+					src={photographe}
+					alt=""
+					widths={[570]}
+					sizes="(max-width: 900px) 80vw, 430px"
+					format="webp"
+					loading="eager"
+					class="blend-white"
+				/>
+				<Scribble text="Good vibes seulement !" sparks rotate={-5} class="page-head__note" />
+			</div>
 		</div>
 	</section>
 
@@ -27,11 +51,72 @@ const actus = (await getCollection('actus')).sort(
 		<div class="container">
 			{
 				actus.length > 0 ? (
-					<div class="grid grid--3">
-						{actus.map((entry, i) => (
-							<ActuCard entry={entry} eager={i === 0} />
-						))}
-					</div>
+					<>
+						<div class="toolbar" data-actus-toolbar hidden>
+							<div class="toolbar__filters" role="group" aria-label="Filtrer par catégorie">
+								<button type="button" class="filter" data-filter="all" aria-pressed="true">
+									Tous les articles
+								</button>
+								{categories.map((categorie) => (
+									<button
+										type="button"
+										class="filter"
+										data-filter={categorie}
+										aria-pressed="false"
+									>
+										{categorie}
+									</button>
+								))}
+							</div>
+
+							<div class="search">
+								<label class="visually-hidden" for="recherche-actu">
+									Rechercher un article
+								</label>
+								<svg class="search__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+									<circle
+										cx="11"
+										cy="11"
+										r="6.4"
+										stroke="currentColor"
+										stroke-width="1.8"
+									/>
+									<path
+										d="m16 16 4 4"
+										stroke="currentColor"
+										stroke-width="1.8"
+										stroke-linecap="round"
+									/>
+								</svg>
+								<input
+									type="search"
+									id="recherche-actu"
+									placeholder="Rechercher un article…"
+									autocomplete="off"
+									data-search
+								/>
+							</div>
+						</div>
+
+						<p class="visually-hidden" role="status" data-actus-status />
+
+						<div class="grid grid--3">
+							{actus.map((entry, i) => (
+								<ActuCard entry={entry} eager={i === 0} />
+							))}
+						</div>
+
+						<p class="empty" data-actus-empty hidden>
+							Aucun article ne correspond à cette recherche.
+						</p>
+
+						<Scribble
+							text="Des souvenirs qui rapprochent"
+							sparks
+							rotate={3}
+							class="actus-outro"
+						/>
+					</>
 				) : (
 					<p class="empty">Les premières actualités arrivent bientôt.</p>
 				)
@@ -40,17 +125,210 @@ const actus = (await getCollection('actus')).sort(
 	</section>
 </BaseLayout>
 
+<script>
+	const toolbar = document.querySelector<HTMLElement>('[data-actus-toolbar]');
+
+	if (toolbar) {
+		// La barre n'apparaît qu'une fois le script en place : sans JS, mieux vaut
+		// aucun filtre que des boutons qui ne répondent pas.
+		toolbar.hidden = false;
+
+		const cartes = Array.from(document.querySelectorAll<HTMLElement>('[data-actu]'));
+		const boutons = Array.from(toolbar.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+		const champ = toolbar.querySelector<HTMLInputElement>('[data-search]');
+		const etat = document.querySelector<HTMLElement>('[data-actus-status]');
+		const vide = document.querySelector<HTMLElement>('[data-actus-empty]');
+
+		let categorie = 'all';
+
+		const sansAccent = (valeur: string) =>
+			valeur
+				.toLowerCase()
+				.normalize('NFD')
+				.replace(/\p{Diacritic}/gu, '')
+				.trim();
+
+		const appliquer = () => {
+			const requete = sansAccent(champ?.value ?? '');
+			let visibles = 0;
+
+			for (const carte of cartes) {
+				const bonneCategorie = categorie === 'all' || carte.dataset.category === categorie;
+				const bonTexte = !requete || (carte.dataset.haystack ?? '').includes(requete);
+				const afficher = bonneCategorie && bonTexte;
+
+				carte.hidden = !afficher;
+				if (afficher) visibles += 1;
+			}
+
+			if (vide) vide.hidden = visibles > 0;
+			if (etat) {
+				etat.textContent =
+					visibles === 0
+						? 'Aucun article ne correspond à cette recherche.'
+						: `${visibles} article${visibles > 1 ? 's' : ''} affiché${visibles > 1 ? 's' : ''}.`;
+			}
+		};
+
+		for (const bouton of boutons) {
+			bouton.addEventListener('click', () => {
+				categorie = bouton.dataset.filter ?? 'all';
+				for (const autre of boutons) {
+					autre.setAttribute('aria-pressed', String(autre === bouton));
+				}
+				appliquer();
+			});
+		}
+
+		champ?.addEventListener('input', appliquer);
+		appliquer();
+	}
+</script>
+
 <style>
 	.page-head {
-		background: linear-gradient(180deg, #faf6fb, #fff);
-		padding-block: clamp(2rem, 1.6rem + 2vw, 3rem) clamp(1.25rem, 1rem + 1.5vw, 2rem);
+		position: relative;
+		overflow: hidden;
+		padding-block: clamp(2rem, 1.6rem + 2.5vw, 3.5rem) clamp(1.25rem, 1rem + 1.5vw, 2rem);
+	}
+
+	.page-head__inner {
+		display: grid;
+		gap: 1.25rem;
+		align-items: center;
 	}
 
 	.page-head .lead {
-		max-width: 58ch;
+		max-width: 52ch;
+	}
+
+	.page-head__visual {
+		position: relative;
+		display: grid;
+		justify-items: center;
+	}
+
+	.page-head__visual img {
+		width: min(80vw, 340px);
+		height: auto;
+	}
+
+	.page-head__visual :global(.page-head__note) {
+		margin-top: 0.75rem;
+		text-align: center;
+	}
+
+	@media (min-width: 900px) {
+		.page-head__inner {
+			grid-template-columns: 1fr 1fr;
+			gap: 1.5rem;
+		}
+
+		.page-head__visual img {
+			width: 100%;
+			max-width: 430px;
+		}
+
+		.page-head__visual :global(.page-head__note) {
+			position: absolute;
+			top: 1.5rem;
+			inset-inline-start: -3.5rem;
+			max-width: 9ch;
+			margin: 0;
+			text-align: start;
+		}
+	}
+
+	/* ---------- Filtres ---------- */
+
+	.toolbar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 2rem;
+	}
+
+	.toolbar__filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.filter {
+		font-family: var(--bb-font-head);
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--bb-plum-900);
+		background: #fff;
+		border: 1px solid var(--bb-border);
+		border-radius: 999px;
+		padding: 0.6rem 1.15rem;
+		cursor: pointer;
+		transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+	}
+
+	.filter:hover {
+		border-color: var(--bb-plum-500);
+	}
+
+	.filter[aria-pressed='true'] {
+		background: var(--bb-bg-lav);
+		border-color: transparent;
+		color: var(--bb-plum-700);
+	}
+
+	.search {
+		position: relative;
+		flex: 1 1 240px;
+		max-width: 340px;
+	}
+
+	.search__icon {
+		position: absolute;
+		inset-block-start: 50%;
+		inset-inline-start: 0.95rem;
+		width: 18px;
+		height: 18px;
+		transform: translateY(-50%);
+		color: var(--bb-muted);
+		pointer-events: none;
+	}
+
+	.search input {
+		width: 100%;
+		font-family: var(--bb-font-body);
+		font-size: 0.93rem;
+		color: var(--bb-ink);
+		background: #fff;
+		border: 1px solid var(--bb-border);
+		border-radius: 999px;
+		padding: 0.7rem 1.1rem 0.7rem 2.75rem;
+	}
+
+	.search input::placeholder {
+		color: var(--bb-muted);
+	}
+
+	.search input:focus-visible {
+		border-color: var(--bb-plum-500);
+	}
+
+	/* ---------- Liste ---------- */
+
+	.grid :global(.actu-card[hidden]) {
+		display: none;
 	}
 
 	.empty {
 		color: var(--bb-muted);
+	}
+
+	.section :global(.actus-outro) {
+		display: block;
+		margin: 2.5rem auto 0;
+		max-width: 22ch;
+		text-align: center;
 	}
 </style>

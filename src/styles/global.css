@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Caveat:wght@600;700&display=swap');
 
 :root {
 	--bb-plum-900: #291046;
@@ -12,20 +12,28 @@
 	--bb-ink: #2a2027;
 	--bb-muted: #6b5f68;
 	--bb-bg: #ffffff;
-	--bb-bg-soft: #fbf8fa;
-	--bb-bg-lav: #f6f1f8;
-	--bb-border: #ede2ea;
+	--bb-bg-page: #fcfaff;
+	--bb-bg-soft: #f8f5fd;
+	--bb-bg-lav: #f1ecfc;
+	--bb-border: #ece6f7;
 
-	--bb-radius: 14px;
-	--bb-radius-lg: 22px;
-	--bb-shadow: 0 1px 2px rgb(41 16 70 / 6%), 0 8px 24px rgb(41 16 70 / 6%);
-	--bb-shadow-lift: 0 2px 4px rgb(41 16 70 / 8%), 0 16px 40px rgb(41 16 70 / 12%);
+	/* Taches colorées diffuses du fond : volontairement très désaturées,
+	   elles doivent se deviner sans jamais concurrencer le texte. */
+	--bb-blob-violet: #ddd2fb;
+	--bb-blob-peach: #ffdcc6;
+	--bb-blob-pink: #f9d8ee;
+
+	--bb-radius: 18px;
+	--bb-radius-lg: 26px;
+	--bb-shadow: 0 1px 2px rgb(41 16 70 / 5%), 0 10px 30px rgb(41 16 70 / 6%);
+	--bb-shadow-lift: 0 2px 6px rgb(41 16 70 / 8%), 0 20px 48px rgb(41 16 70 / 13%);
 
 	--bb-max: 1140px;
 	--bb-gutter: 20px;
 
 	--bb-font-head: 'Outfit', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 	--bb-font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--bb-font-hand: 'Caveat', 'Segoe Script', cursive;
 }
 
 *,
@@ -41,7 +49,7 @@ html {
 
 body {
 	margin: 0;
-	background: var(--bb-bg);
+	background: var(--bb-bg-page);
 	color: var(--bb-ink);
 	font-family: var(--bb-font-body);
 	font-size: 1rem;
@@ -71,25 +79,30 @@ h3,
 h4 {
 	font-family: var(--bb-font-head);
 	color: var(--bb-plum-900);
-	line-height: 1.15;
-	letter-spacing: -0.02em;
+	line-height: 1.12;
+	letter-spacing: -0.025em;
 	margin: 0 0 0.5em;
 	text-wrap: balance;
 }
 
 h1 {
-	font-size: clamp(1.75rem, 1.3rem + 2.4vw, 2.75rem);
+	font-size: clamp(2rem, 1.4rem + 3vw, 3.4rem);
 	font-weight: 800;
 }
 
 h2 {
-	font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.95rem);
-	font-weight: 700;
+	font-size: clamp(1.5rem, 1.15rem + 1.6vw, 2.3rem);
+	font-weight: 800;
 }
 
 h3 {
 	font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.2rem);
 	font-weight: 700;
+}
+
+/* Le mot mis en avant dans un titre passe en orange, comme sur la charte. */
+.accent-word {
+	color: var(--bb-orange);
 }
 
 p {
@@ -103,6 +116,52 @@ p {
 	border-radius: 4px;
 }
 
+/* ---------- Décor de fond ---------- */
+
+/* z-index négatif plutôt qu'un calque au-dessus : le contenu reste dans le
+   contexte d'empilement racine, sans quoi `mix-blend-mode` sur les
+   illustrations n'aurait plus le fond de page comme toile de fond. */
+.page-blobs {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.page-blobs span {
+	position: absolute;
+	border-radius: 50%;
+	filter: blur(80px);
+}
+
+.page-blobs span:nth-child(1) {
+	width: 46vw;
+	height: 46vw;
+	top: -14vw;
+	left: -12vw;
+	background: var(--bb-blob-violet);
+	opacity: 0.5;
+}
+
+.page-blobs span:nth-child(2) {
+	width: 34vw;
+	height: 34vw;
+	top: 22vh;
+	right: -14vw;
+	background: var(--bb-blob-peach);
+	opacity: 0.4;
+}
+
+.page-blobs span:nth-child(3) {
+	width: 40vw;
+	height: 40vw;
+	bottom: -16vw;
+	left: 10vw;
+	background: var(--bb-blob-pink);
+	opacity: 0.32;
+}
+
 /* ---------- Mise en page ---------- */
 
 .container {
@@ -113,7 +172,7 @@ p {
 }
 
 .section {
-	padding-block: clamp(2.25rem, 1.75rem + 3.5vw, 4rem);
+	padding-block: clamp(2.5rem, 1.9rem + 3.8vw, 4.5rem);
 }
 
 .section--soft {
@@ -127,33 +186,38 @@ p {
 
 .section__intro {
 	max-width: 62ch;
-	margin-bottom: 1.75rem;
+	margin-bottom: 2rem;
 }
 
 .eyebrow {
 	font-family: var(--bb-font-head);
 	font-size: 0.78rem;
 	font-weight: 700;
-	letter-spacing: 0.12em;
+	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	color: var(--bb-orange);
 	margin: 0 0 0.6rem;
 }
 
+.eyebrow--violet {
+	color: var(--bb-plum-500);
+}
+
 .lead {
-	font-size: clamp(0.98rem, 0.95rem + 0.2vw, 1.08rem);
+	font-size: clamp(0.98rem, 0.95rem + 0.25vw, 1.12rem);
 	color: var(--bb-muted);
 }
 
 .grid {
 	display: grid;
-	gap: 1rem;
+	gap: 1.1rem;
 	grid-template-columns: 1fr;
 }
 
 @media (min-width: 620px) {
 	.grid--2,
-	.grid--4 {
+	.grid--4,
+	.grid--5 {
 		grid-template-columns: repeat(2, 1fr);
 	}
 }
@@ -166,6 +230,16 @@ p {
 	.grid--4 {
 		grid-template-columns: repeat(4, 1fr);
 	}
+
+	.grid--5 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (min-width: 1060px) {
+	.grid--5 {
+		grid-template-columns: repeat(5, 1fr);
+	}
 }
 
 @media (min-width: 620px) and (max-width: 899px) {
@@ -174,18 +248,122 @@ p {
 	}
 }
 
+/* ---------- Annotations manuscrites ---------- */
+
+.scribble {
+	position: relative;
+	display: inline-block;
+	font-family: var(--bb-font-hand);
+	font-size: clamp(1.15rem, 0.95rem + 0.9vw, 1.7rem);
+	font-weight: 700;
+	line-height: 1.15;
+	color: var(--bb-violet);
+	text-wrap: balance;
+}
+
+.scribble--orange {
+	color: var(--bb-orange);
+}
+
+.scribble__underline {
+	display: block;
+	width: 100%;
+	height: 0.42em;
+	margin-top: 0.05em;
+	color: var(--bb-orange);
+	overflow: visible;
+}
+
+.scribble--orange .scribble__underline {
+	color: var(--bb-violet);
+}
+
+.scribble__spark {
+	position: absolute;
+	top: -0.45em;
+	width: 1.1em;
+	height: 1.1em;
+	color: var(--bb-orange);
+}
+
+.scribble__spark--start {
+	inset-inline-start: -1.35em;
+	transform: scaleX(-1);
+}
+
+.scribble__spark--end {
+	inset-inline-end: -1.35em;
+}
+
+.scribble--orange .scribble__spark {
+	color: var(--bb-violet);
+}
+
+/* ---------- Icônes ---------- */
+
+.icon {
+	display: block;
+	width: 26px;
+	height: 26px;
+}
+
+/* Le trait secondaire des pictos passe en orange : c'est ce qui les rend
+   bicolores sans dupliquer chaque tracé. Déclaré ici et non dans le
+   composant, car les styles à portée locale n'atteignent pas `set:html`. */
+.icon .accent {
+	stroke: var(--bb-orange);
+}
+
+.icon-tile {
+	display: grid;
+	place-items: center;
+	width: 52px;
+	height: 52px;
+	border-radius: 16px;
+	background: var(--bb-bg-lav);
+	color: var(--bb-violet);
+	margin-bottom: 1rem;
+}
+
+/* Illustrations 3D de la charte : elles portent déjà leur pastille de fond,
+   on les pose donc telles quelles sans les enfermer dans une tuile. */
+.illus {
+	display: block;
+	width: 64px;
+	height: 64px;
+	object-fit: contain;
+	margin-bottom: 0.9rem;
+}
+
+.illus--lg {
+	width: 76px;
+	height: 76px;
+}
+
+.icon-tile--sm {
+	width: 40px;
+	height: 40px;
+	border-radius: 12px;
+	margin-bottom: 0;
+}
+
+.icon-tile--sm .icon {
+	width: 21px;
+	height: 21px;
+}
+
 /* ---------- Boutons ---------- */
 
 .btn {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: 0.5rem;
+	gap: 0.55rem;
 	font-family: var(--bb-font-head);
 	font-weight: 600;
-	font-size: 0.93rem;
+	font-size: 0.95rem;
 	line-height: 1.2;
-	padding: 0.75rem 1.3rem;
+	padding: 0.85rem 1.5rem;
 	border-radius: 999px;
 	border: 1px solid transparent;
 	text-decoration: none;
@@ -197,32 +375,72 @@ p {
 	transform: translateY(-1px);
 }
 
+/* La flèche avance au survol : le seul mouvement décoratif du site. */
+.btn__arrow {
+	transition: transform 0.15s ease;
+}
+
+.btn:hover .btn__arrow {
+	transform: translateX(3px);
+}
+
 .btn--primary {
 	background: linear-gradient(135deg, var(--bb-orange), var(--bb-orange-dark));
 	color: #fff;
-	box-shadow: 0 6px 18px rgb(242 107 33 / 30%);
+	box-shadow: 0 8px 22px rgb(242 107 33 / 32%);
 }
 
 .btn--plum {
 	background: linear-gradient(135deg, var(--bb-plum-700), var(--bb-plum-900));
 	color: #fff;
-	box-shadow: 0 6px 18px rgb(41 16 70 / 25%);
+	box-shadow: 0 8px 22px rgb(41 16 70 / 28%);
 }
 
 .btn--ghost {
-	background: transparent;
+	background: rgb(255 255 255 / 80%);
 	color: var(--bb-plum-700);
 	border-color: var(--bb-border);
 }
 
 .btn--ghost:hover {
 	border-color: var(--bb-plum-500);
-	background: var(--bb-bg-soft);
+	background: #fff;
 }
 
 .btn--on-dark {
 	background: #fff;
 	color: var(--bb-plum-900);
+}
+
+/* ---------- Pastilles ---------- */
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-family: var(--bb-font-head);
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	padding: 0.5rem 1rem;
+	border-radius: 999px;
+	background: #fff;
+	color: var(--bb-plum-700);
+	border: 1px solid var(--bb-border);
+	box-shadow: var(--bb-shadow);
+}
+
+.chip--plum {
+	background: var(--bb-plum-700);
+	border-color: transparent;
+	color: #fff;
+}
+
+.chip--orange {
+	background: var(--bb-orange);
+	border-color: transparent;
+	color: #fff;
 }
 
 /* ---------- Cartes ---------- */
@@ -231,27 +449,25 @@ p {
 	background: #fff;
 	border: 1px solid var(--bb-border);
 	border-radius: var(--bb-radius);
-	padding: 1.25rem;
+	padding: 1.5rem;
 	box-shadow: var(--bb-shadow);
 }
 
 .card h3 {
-	margin-bottom: 0.3rem;
+	margin-bottom: 0.35rem;
 }
 
 .card p:last-child {
 	margin-bottom: 0;
 }
 
-.card__icon {
-	display: grid;
-	place-items: center;
-	width: 44px;
-	height: 44px;
-	border-radius: 12px;
-	background: var(--bb-bg-lav);
-	margin-bottom: 0.85rem;
-	font-size: 1.35rem;
+.card--lift {
+	transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card--lift:hover {
+	transform: translateY(-4px);
+	box-shadow: var(--bb-shadow-lift);
 }
 
 /* ---------- Mascotte sur fond clair ----------
@@ -272,6 +488,11 @@ p {
 	overflow: hidden;
 	clip-path: inset(50%);
 	white-space: nowrap;
+}
+
+.muted {
+	color: var(--bb-muted);
+	font-size: 0.95rem;
 }
 
 .prose :where(h2, h3) {

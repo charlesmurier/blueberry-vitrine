@@ -1,0 +1,65 @@
+---
+/**
+ * Annotation manuscrite façon note au feutre, reprise de la charte :
+ * un mot d'ambiance posé à côté du contenu, jamais porteur d'information.
+ * Purement décoratif, donc masqué aux lecteurs d'écran.
+ */
+interface Props {
+	text: string;
+	tone?: 'violet' | 'orange';
+	underline?: boolean;
+	sparks?: boolean;
+	/** Inclinaison en degrés, pour casser l'alignement trop sage. */
+	rotate?: number;
+	class?: string;
+}
+
+const { text, tone = 'violet', underline = false, sparks = false, rotate = 0, class: className } = Astro.props;
+---
+
+<span
+	class:list={['scribble', tone === 'orange' && 'scribble--orange', className]}
+	style={rotate ? `transform: rotate(${rotate}deg)` : undefined}
+	aria-hidden="true"
+>
+	{
+		sparks && (
+			<svg class="scribble__spark scribble__spark--start" viewBox="0 0 24 24" fill="none">
+				<path
+					d="M4 12h6M6.5 5.2l4 3.4M6.5 18.8l4-3.4"
+					stroke="currentColor"
+					stroke-width="2.4"
+					stroke-linecap="round"
+				/>
+			</svg>
+		)
+	}
+
+	<span class="scribble__text">{text}</span>
+
+	{
+		underline && (
+			<svg class="scribble__underline" viewBox="0 0 200 14" preserveAspectRatio="none" fill="none">
+				<path
+					d="M4 9.5c28-5.2 61-7 97-5.2 30 1.5 58 4.4 95 2.4"
+					stroke="currentColor"
+					stroke-width="3.2"
+					stroke-linecap="round"
+				/>
+			</svg>
+		)
+	}
+
+	{
+		sparks && (
+			<svg class="scribble__spark scribble__spark--end" viewBox="0 0 24 24" fill="none">
+				<path
+					d="M4 12h6M6.5 5.2l4 3.4M6.5 18.8l4-3.4"
+					stroke="currentColor"
+					stroke-width="2.4"
+					stroke-linecap="round"
+				/>
+			</svg>
+		)
+	}
+</span>

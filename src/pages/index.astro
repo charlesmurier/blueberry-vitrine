@@ -1,11 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectorCard from '../components/SectorCard.astro';
 import ActuCard from '../components/ActuCard.astro';
 import CTABanner from '../components/CTABanner.astro';
-import OfficeVideo from '../components/OfficeVideo.astro';
-import { sectors } from '../data/company';
+import Scribble from '../components/Scribble.astro';
+import Icon from '../components/Icon.astro';
+import heroBureau from '../assets/illus/hero-bureau.png';
+import valeurRespect from '../assets/illus/valeur-respect.png';
+import valeurIntegrite from '../assets/illus/valeur-integrite.png';
+import valeurSolidarite from '../assets/illus/valeur-solidarite.png';
+import { sectors, sectorsLabel } from '../data/company';
 
 const dernieresActus = (await getCollection('actus'))
 	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
@@ -13,49 +19,67 @@ const dernieresActus = (await getCollection('actus'))
 
 const valeurs = [
 	{
-		icon: '🤝',
+		illus: valeurRespect,
 		name: 'Respect',
 		description:
 			'Chaque personne apporte une valeur unique à l’équipe, bien au-delà de son rôle professionnel.',
 	},
 	{
-		icon: '🎯',
+		illus: valeurIntegrite,
 		name: 'Intégrité',
 		description:
 			'Des engagements tenus, une parole claire avec nos clients comme avec nos collaborateurs.',
 	},
 	{
-		icon: '💜',
+		illus: valeurSolidarite,
 		name: 'Solidarité',
 		description:
 			'On avance ensemble. Les réussites comme les difficultés d’un projet se partagent.',
 	},
 ];
+
+const enBref = [
+	{ icon: 'briefcase', label: 'En bref', value: 'Conseil en informatique et numérique' },
+	{ icon: 'pin', label: 'Implantation', value: 'Mougins, Sophia-Antipolis (06)' },
+	{ icon: 'sectors', label: 'Secteurs', value: sectorsLabel },
+	{ icon: 'star', label: 'Ce qui nous distingue', value: 'Le bien-être génère la performance' },
+];
 ---
 
 <BaseLayout
 	title="Conseil en informatique et numérique à Sophia-Antipolis"
-	description="Blueberry Digital Services accompagne les projets technologiques exigeants dans l'automobile, la défense, l'espace et les télécommunications. Chez nous, l'humain passe avant tout."
+	description="Blueberry Digital Services accompagne les projets technologiques exigeants dans l'automobile, l'aérien, la défense, l'espace et les télécommunications. Chez nous, l'humain passe avant tout."
 >
 	<section class="hero">
 		<div class="container hero__inner">
 			<div class="hero__text">
-				<p class="eyebrow">Qui sommes-nous</p>
-				<h1>Le numérique est <span>avant tout une aventure humaine</span></h1>
+				<p class="eyebrow">Le numérique est avant tout</p>
+				<h1>Une aventure <span class="accent-word">humaine</span></h1>
 				<p class="lead">
 					Blueberry Digital Services accompagne ses clients sur des projets technologiques exigeants.
 					Notre conviction est simple : le bien-être génère la performance, et l’humain passe avant
 					tout.
 				</p>
 				<div class="hero__actions">
-					<a href="/nous-rejoindre" class="btn btn--plum">Nous rejoindre</a>
+					<a href="/nous-rejoindre" class="btn btn--plum">
+						Nous rejoindre <span class="btn__arrow" aria-hidden="true">→</span>
+					</a>
 					<a href="#secteurs" class="btn btn--ghost">Nos secteurs</a>
 				</div>
 			</div>
 
-			<div class="hero__visual">
-				<OfficeVideo />
-			</div>
+			{/* Les pastilles Tech/Humain/Impact et la note manuscrite font partie
+			    de l'illustration de la charte : elles sont dans l'image. */}
+			<Image
+				src={heroBureau}
+				alt=""
+				widths={[498]}
+				sizes="(max-width: 900px) 92vw, 520px"
+				format="webp"
+				loading="eager"
+				fetchpriority="high"
+				class="blend-white hero__illus"
+			/>
 		</div>
 	</section>
 
@@ -92,24 +116,21 @@ const valeurs = [
 			</div>
 
 			<aside class="facts">
-				<h2 class="facts__title">En bref</h2>
+				<h2 class="visually-hidden">En bref</h2>
 				<dl>
-					<div>
-						<dt>Métier</dt>
-						<dd>Conseil en informatique et numérique</dd>
-					</div>
-					<div>
-						<dt>Implantation</dt>
-						<dd>Mougins, Sophia-Antipolis (06)</dd>
-					</div>
-					<div>
-						<dt>Secteurs</dt>
-						<dd>Automotive · Défense · Espace · Télécommunications</dd>
-					</div>
-					<div>
-						<dt>Ce qui nous distingue</dt>
-						<dd>Le bien-être génère la performance</dd>
-					</div>
+					{
+						enBref.map((fait) => (
+							<div class="facts__row">
+								<span class="icon-tile icon-tile--sm">
+									<Icon name={fait.icon} />
+								</span>
+								<div>
+									<dt>{fait.label}</dt>
+									<dd>{fait.value}</dd>
+								</div>
+							</div>
+						))
+					}
 				</dl>
 			</aside>
 		</div>
@@ -118,21 +139,30 @@ const valeurs = [
 	<section class="section section--soft">
 		<div class="container">
 			<div class="section__intro">
-				<p class="eyebrow">Ce qui nous tient</p>
+				<p class="eyebrow">Ce qui nous tient à cœur</p>
 				<h2>Nos valeurs</h2>
 			</div>
-			<div class="grid grid--3">
-				{
-					valeurs.map((valeur) => (
-						<article class="card">
-							<div class="card__icon" aria-hidden="true">
-								{valeur.icon}
-							</div>
-							<h3>{valeur.name}</h3>
-							<p class="muted">{valeur.description}</p>
-						</article>
-					))
-				}
+
+			<div class="values">
+				<div class="grid grid--3">
+					{
+						valeurs.map((valeur) => (
+							<article class="card card--lift">
+								<Image
+									src={valeur.illus}
+									alt=""
+									widths={[152]}
+									sizes="76px"
+									format="webp"
+									class="illus illus--lg"
+								/>
+								<h3>{valeur.name}</h3>
+								<p class="muted">{valeur.description}</p>
+							</article>
+						))
+					}
+				</div>
+				<Scribble text="Des valeurs qui nous font grandir" sparks rotate={-8} class="values__note" />
 			</div>
 		</div>
 	</section>
@@ -149,7 +179,7 @@ const valeurs = [
 				</p>
 			</div>
 
-			<div class="grid grid--4">
+			<div class="grid grid--5">
 				{sectors.map((sector) => <SectorCard {...sector} />)}
 			</div>
 		</div>
@@ -169,7 +199,7 @@ const valeurs = [
 							</p>
 						</div>
 						<a href="/actus" class="btn btn--ghost actus-head__link">
-							Toutes les actus
+							Toutes les actus <span class="btn__arrow" aria-hidden="true">→</span>
 						</a>
 					</div>
 
@@ -184,114 +214,129 @@ const valeurs = [
 	}
 
 	<CTABanner
-		title="Vous cherchez un nouveau défi professionnel ?"
-		text="Nous recrutons des profils curieux et exigeants, avec une rémunération au-dessus du prix du marché et des projets qui comptent."
-		ctaLabel="Découvrir Blueberry"
+		title="Envie de rejoindre l’aventure ?"
+		text="Des projets ambitieux, une équipe soudée et un cadre de vie unique en plein cœur de la Côte d’Azur."
+		ctaLabel="Nous rejoindre"
 		ctaHref="/nous-rejoindre"
-		secondaryLabel="Nous écrire"
-		secondaryHref="/contact"
 	/>
 </BaseLayout>
 
 <style>
 	.hero {
-		background:
-			radial-gradient(120% 90% at 85% 10%, #f3ebf7 0%, transparent 60%),
-			linear-gradient(180deg, #fdfbfe, #fff);
-		padding-block: clamp(2rem, 1.4rem + 3.5vw, 3.75rem);
+		position: relative;
+		padding-block: clamp(1.5rem, 1rem + 2.5vw, 3rem);
 		overflow: hidden;
 	}
 
 	.hero__inner {
 		display: grid;
-		gap: 1.25rem;
+		gap: 1rem;
 		align-items: center;
-	}
-
-	.hero h1 span {
-		color: var(--bb-plum-700);
 	}
 
 	.hero__actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.65rem;
-		margin-top: 1.25rem;
+		gap: 0.7rem;
+		margin-top: 1.5rem;
 	}
 
-	/* Sur mobile la vidéo prend toute la largeur : la rétrécir comme on le
-	   faisait pour la mascotte rendrait la scène illisible. */
-	.hero__visual {
+	.hero :global(.hero__illus) {
 		order: -1;
-		max-width: 480px;
-		margin-inline: auto;
+		width: min(92vw, 420px);
+		height: auto;
+		justify-self: center;
 	}
 
 	@media (min-width: 900px) {
 		.hero__inner {
-			grid-template-columns: 1.05fr 0.95fr;
-			gap: 2rem;
+			grid-template-columns: 1fr 1.05fr;
+			gap: 1.5rem;
 		}
 
-		.hero__visual {
+		.hero :global(.hero__illus) {
 			order: 0;
-			max-width: 420px;
+			width: 100%;
+			max-width: 560px;
+			justify-self: end;
 		}
 	}
 
 	.split {
 		display: grid;
-		gap: 1.5rem;
+		gap: 1.75rem;
 	}
 
 	@media (min-width: 900px) {
 		.split {
 			grid-template-columns: 1.5fr 1fr;
-			gap: 2.25rem;
+			gap: 2.5rem;
 			align-items: start;
 		}
 	}
 
 	.facts {
-		background: var(--bb-bg-lav);
+		background: #fff;
+		border: 1px solid var(--bb-border);
 		border-radius: var(--bb-radius-lg);
-		padding: 1.5rem;
-	}
-
-	.facts__title {
-		font-size: 0.78rem;
-		font-weight: 700;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--bb-plum-700);
-		margin-bottom: 1rem;
+		box-shadow: var(--bb-shadow);
+		padding: 1.75rem;
 	}
 
 	.facts dl {
 		margin: 0;
 		display: grid;
+		gap: 1.15rem;
+	}
+
+	.facts__row {
+		display: flex;
+		align-items: flex-start;
 		gap: 0.9rem;
 	}
 
+	.facts__row :global(.icon-tile) {
+		flex-shrink: 0;
+	}
+
 	.facts dt {
-		font-size: 0.78rem;
-		font-weight: 600;
-		letter-spacing: 0.08em;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		color: var(--bb-muted);
-		margin-bottom: 0.2rem;
+		color: var(--bb-orange);
+		margin-bottom: 0.15rem;
 	}
 
 	.facts dd {
 		margin: 0;
 		font-family: var(--bb-font-head);
 		font-weight: 600;
+		font-size: 0.97rem;
 		color: var(--bb-plum-900);
 	}
 
-	.muted {
-		color: var(--bb-muted);
-		font-size: 0.95rem;
+	/* La note manuscrite déborde à droite des cartes, comme sur la charte. */
+	.values {
+		position: relative;
+	}
+
+	.values :global(.values__note) {
+		display: block;
+		margin: 1.5rem auto 0;
+		max-width: 20ch;
+		text-align: center;
+	}
+
+	@media (min-width: 1280px) {
+		.values :global(.values__note) {
+			position: absolute;
+			inset-block-start: 1rem;
+			inset-inline-start: calc(100% + 0.5rem);
+			width: 13ch;
+			margin: 0;
+			text-align: start;
+		}
 	}
 
 	.actus-head {
@@ -303,7 +348,7 @@ const valeurs = [
 	}
 
 	.actus-head .section__intro {
-		margin-bottom: 1.25rem;
+		margin-bottom: 1.5rem;
 	}
 
 	.actus-head__link {

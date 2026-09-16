@@ -1,10 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Scribble from '../components/Scribble.astro';
 import { company, mapsUrl } from '../data/company';
 
 const moyens = [
 	{
-		icon: '✉️',
+		icon: 'mail',
 		label: 'Email',
 		value: company.email,
 		href: `mailto:${company.email}`,
@@ -12,7 +14,7 @@ const moyens = [
 		external: false,
 	},
 	{
-		icon: '📞',
+		icon: 'phone',
 		label: 'Téléphone',
 		value: company.phoneDisplay,
 		href: company.phoneLink,
@@ -20,7 +22,7 @@ const moyens = [
 		external: false,
 	},
 	{
-		icon: '💬',
+		icon: 'chat',
 		label: 'WhatsApp',
 		value: 'Démarrer une discussion',
 		href: company.whatsapp,
@@ -28,7 +30,7 @@ const moyens = [
 		external: true,
 	},
 	{
-		icon: '💼',
+		icon: 'linkedin',
 		label: 'LinkedIn',
 		value: 'Blueberry Digital Services',
 		href: company.linkedin,
@@ -43,13 +45,16 @@ const moyens = [
 	description="Contactez Blueberry Digital Services à Mougins, Sophia-Antipolis : par email, téléphone, WhatsApp ou LinkedIn."
 >
 	<section class="page-head">
-		<div class="container">
-			<p class="eyebrow">Contact</p>
-			<h1>Parlons de votre projet</h1>
-			<p class="lead">
-				Une question, un besoin d’accompagnement, une candidature ? Écrivez-nous, nous répondons
-				rapidement.
-			</p>
+		<div class="container page-head__inner">
+			<div>
+				<p class="eyebrow">Contact</p>
+				<h1>Parlons de votre <span class="accent-word">projet</span></h1>
+				<p class="lead">
+					Une question, un besoin d’accompagnement, une candidature ? Écrivez-nous, nous répondons
+					rapidement.
+				</p>
+			</div>
+			<Scribble text="On répond vite, promis !" sparks rotate={-4} class="page-head__note" />
 		</div>
 	</section>
 
@@ -64,8 +69,8 @@ const moyens = [
 							target={moyen.external ? '_blank' : undefined}
 							rel={moyen.external ? 'noopener' : undefined}
 						>
-							<span class="card__icon" aria-hidden="true">
-								{moyen.icon}
+							<span class="icon-tile">
+								<Icon name={moyen.icon} />
 							</span>
 							<span class="contact-card__label">{moyen.label}</span>
 							<span class="contact-card__value">{moyen.value}</span>
@@ -107,12 +112,28 @@ const moyens = [
 
 <style>
 	.page-head {
-		background: linear-gradient(180deg, #faf6fb, #fff);
-		padding-block: clamp(2rem, 1.6rem + 2vw, 3rem) clamp(1.25rem, 1rem + 1.5vw, 2rem);
+		padding-block: clamp(2rem, 1.6rem + 2.5vw, 3.5rem) clamp(1.25rem, 1rem + 1.5vw, 2rem);
+	}
+
+	.page-head__inner {
+		display: grid;
+		gap: 1rem;
+		align-items: center;
 	}
 
 	.page-head .lead {
 		max-width: 58ch;
+	}
+
+	.page-head :global(.page-head__note) {
+		max-width: 18ch;
+	}
+
+	@media (min-width: 900px) {
+		.page-head__inner {
+			grid-template-columns: 1.5fr 0.5fr;
+			gap: 2rem;
+		}
 	}
 
 	.contact-card {

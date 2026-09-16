@@ -1,4 +1,8 @@
 ---
+import { Image } from 'astro:assets';
+import Scribble from './Scribble.astro';
+import photo from '../assets/illus/cta-cote-azur.png';
+
 interface Props {
 	title: string;
 	text?: string;
@@ -6,71 +10,129 @@ interface Props {
 	ctaHref: string;
 	secondaryLabel?: string;
 	secondaryHref?: string;
+	/** Annotation manuscrite posée par-dessus la photo. */
+	note?: string;
 }
 
-const { title, text, ctaLabel, ctaHref, secondaryLabel, secondaryHref } = Astro.props;
+const { title, text, ctaLabel, ctaHref, secondaryLabel, secondaryHref, note } = Astro.props;
 ---
 
 <section class="cta">
 	<div class="container">
 		<div class="cta__panel">
-			<h2>{title}</h2>
-			{text && <p>{text}</p>}
-			<div class="cta__actions">
-				<a href={ctaHref} class="btn btn--primary">{ctaLabel}</a>
-				{
-					secondaryLabel && secondaryHref && (
-						<a href={secondaryHref} class="btn btn--on-dark">
-							{secondaryLabel}
-						</a>
-					)
-				}
+			<Image
+				src={photo}
+				alt=""
+				widths={[470]}
+				sizes="(max-width: 780px) 100vw, 560px"
+				format="webp"
+				loading="lazy"
+				class="cta__photo"
+			/>
+
+			<div class="cta__content">
+				<h2>{title}</h2>
+				{text && <p>{text}</p>}
+				<div class="cta__actions">
+					<a href={ctaHref} class="btn btn--plum">
+						{ctaLabel} <span class="btn__arrow" aria-hidden="true">→</span>
+					</a>
+					{
+						secondaryLabel && secondaryHref && (
+							<a href={secondaryHref} class="btn btn--on-dark">
+								{secondaryLabel}
+							</a>
+						)
+					}
+				</div>
 			</div>
+
+			{note && <Scribble text={note} underline rotate={-4} class="cta__note" />}
 		</div>
 	</div>
 </section>
 
 <style>
 	.cta {
-		padding-block: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+		padding-block: clamp(1.75rem, 1.3rem + 2vw, 3rem);
 	}
 
 	.cta__panel {
-		background: linear-gradient(135deg, var(--bb-plum-700), var(--bb-plum-900) 65%, #130920);
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
 		border-radius: var(--bb-radius-lg);
-		padding: clamp(1.5rem, 1.2rem + 2.5vw, 2.5rem);
-		text-align: center;
-		color: #fff;
+		background: linear-gradient(120deg, #cdc2f3, #e4d9f5 45%, #f3e2e6);
+		padding: clamp(1.5rem, 1.2rem + 2vw, 2.5rem);
+		min-height: 230px;
+		display: flex;
+		align-items: center;
+	}
+
+	/* La photo occupe la moitié droite et se fond dans le dégradé du panneau. */
+	.cta__panel :global(.cta__photo) {
+		position: absolute;
+		inset-block: 0;
+		inset-inline-end: 0;
+		z-index: -1;
+		width: 62%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 70% center;
+		mask-image: linear-gradient(90deg, transparent, #000 32%);
+	}
+
+	.cta__content {
+		max-width: 42ch;
 	}
 
 	.cta__panel h2 {
-		color: #fff;
-		max-width: 20ch;
-		margin-inline: auto;
+		margin-bottom: 0.4rem;
 	}
 
 	.cta__panel p {
-		max-width: 52ch;
-		margin-inline: auto;
-		color: rgb(255 255 255 / 85%);
+		color: var(--bb-plum-900);
+		opacity: 0.8;
 	}
 
 	.cta__actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.65rem;
-		justify-content: center;
-		margin-top: 1.25rem;
+		gap: 0.7rem;
+		margin-top: 1.5rem;
 	}
 
-	.cta__actions .btn {
-		flex: 1 1 auto;
-		max-width: 320px;
+	.cta__panel :global(.cta__note) {
+		display: none;
 	}
 
-	@media (min-width: 560px) {
-		.cta__actions .btn {
-			flex: 0 0 auto;
+	@media (min-width: 900px) {
+		.cta__panel {
+			min-height: 265px;
+		}
+
+		.cta__panel :global(.cta__note) {
+			display: block;
+			position: absolute;
+			inset-block-start: 2rem;
+			inset-inline-end: 2.25rem;
+			width: 11ch;
+			text-align: start;
+		}
+	}
+
+	/* Sous 780px la photo passerait derrière le texte : on la réduit à une
+	   bande basse pour garder le contraste du titre. */
+	@media (max-width: 779px) {
+		.cta__panel :global(.cta__photo) {
+			width: 100%;
+			height: 45%;
+			inset-block: auto 0;
+			mask-image: linear-gradient(180deg, transparent, #000 60%);
+		}
+
+		.cta__panel {
+			padding-bottom: 7rem;
 		}
 	}
 </style>

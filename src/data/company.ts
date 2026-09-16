@@ -1,3 +1,9 @@
+import automobile from '../assets/illus/secteur-automobile.png';
+import aerien from '../assets/illus/secteur-aerien.png';
+import defense from '../assets/illus/secteur-defense.png';
+import espace from '../assets/illus/secteur-espace.png';
+import telecoms from '../assets/illus/secteur-telecommunications.png';
+
 export const company = {
 	name: 'Blueberry Digital Services',
 	shortName: 'Blueberry',
@@ -22,33 +28,36 @@ export const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encode
 
 export const sectors = [
 	{
-		icon: '🚗',
+		illus: automobile,
 		name: 'Automobile',
 		description:
 			'Systèmes embarqués, connectivité et logiciels critiques pour les acteurs de la mobilité.',
 	},
 	{
-		icon: '✈️',
+		illus: aerien,
 		name: 'Aérien',
 		description:
 			'Systèmes avioniques, logiciels embarqués et outils de simulation pour l’aéronautique.',
 	},
 	{
-		icon: '🛡️',
+		illus: defense,
 		name: 'Défense',
 		description:
 			'Projets exigeants où la robustesse, la sûreté de fonctionnement et la confidentialité priment.',
 	},
 	{
-		icon: '🛰️',
+		illus: espace,
 		name: 'Espace',
 		description:
 			'Logiciels sol et bord, traitement de données satellitaires et outils de simulation.',
 	},
 	{
-		icon: '📡',
+		illus: telecoms,
 		name: 'Télécommunications',
 		description:
 			'Réseaux, protocoles et plateformes capables d’encaisser la montée en charge.',
 	},
 ] as const;
+
+/** Libellé court des secteurs, pour la fiche « en bref ». */
+export const sectorsLabel = sectors.map((s) => s.name).join(' · ');

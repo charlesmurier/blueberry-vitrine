@@ -16,9 +16,18 @@ const dateLabel = date.toLocaleDateString('fr-FR', {
 	month: 'long',
 	year: 'numeric',
 });
+
+/* Matière première du filtre de la page actu : accents retirés pour qu'une
+   recherche « evenement » trouve « Événements ». */
+const haystack = [title, excerpt, category]
+	.filter(Boolean)
+	.join(' ')
+	.toLowerCase()
+	.normalize('NFD')
+	.replace(/\p{Diacritic}/gu, '');
 ---
 
-<article class="actu-card">
+<article class="actu-card" data-actu data-category={category} data-haystack={haystack}>
 	<a href={`/actus/${entry.id}`} class="actu-card__link">
 		<div class="actu-card__media">
 			{
