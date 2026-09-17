@@ -51,6 +51,9 @@ const enBref = [
 	description="Blueberry Digital Services accompagne les projets technologiques exigeants dans l'automobile, l'aérien, la défense, l'espace et les télécommunications. Chez nous, l'humain passe avant tout."
 >
 	<section class="hero">
+		<div class="decor" aria-hidden="true">
+			<span class="blob blob--soft hero__blob hero__blob--bas"></span>
+		</div>
 		<div class="container hero__inner">
 			<div class="hero__text">
 				<p class="eyebrow">Le numérique est avant tout</p>
@@ -78,12 +81,15 @@ const enBref = [
 				format="webp"
 				loading="eager"
 				fetchpriority="high"
-				class="blend-white hero__illus"
+				class="hero__illus"
 			/>
 		</div>
 	</section>
 
-	<section class="section">
+	<section class="section histoire">
+		<div class="decor" aria-hidden="true">
+			<span class="blob histoire__blob"></span>
+		</div>
 		<div class="container split">
 			<div class="prose">
 				<h2>Notre histoire</h2>
@@ -97,22 +103,9 @@ const enBref = [
 					les compétences de chaque individu sont essentielles pour réussir. C’est ce qui guide notre
 					manière de recruter, d’accompagner nos consultants et de travailler avec nos clients.
 				</p>
-
-				<h2>Une approche pragmatique</h2>
-				<p>
-					Nous aidons les managers et les équipes à anticiper les enjeux du numérique en leur
-					fournissant une expertise technique de pointe et une compréhension approfondie de leurs
-					besoins. Ensemble, nous concevons des solutions qui créent de la valeur pour tous les
-					acteurs impliqués.
-				</p>
-				<p>
-					Aujourd’hui, les besoins en matière d’applications vont bien au-delà de la simple
-					fonctionnalité : ils exigent des produits de qualité, robustes et sécurisés, capables de
-					s’adapter aux évolutions futures. Notre approche multi-spécialiste nous permet de proposer
-					une large gamme de services à forte valeur ajoutée dans <a href="#secteurs">
-						plusieurs secteurs d’activité
-					</a>.
-				</p>
+				<a href="/notre-histoire" class="btn btn--ghost histoire__lien">
+					Découvrir notre histoire <span class="btn__arrow" aria-hidden="true">→</span>
+				</a>
 			</div>
 
 			<aside class="facts">
@@ -136,7 +129,11 @@ const enBref = [
 		</div>
 	</section>
 
-	<section class="section section--soft">
+	<section class="section valeurs">
+		<div class="decor" aria-hidden="true">
+			<span class="blob valeurs__blob valeurs__blob--droite"></span>
+			<span class="blob blob--soft valeurs__blob valeurs__blob--gauche"></span>
+		</div>
 		<div class="container">
 			<div class="section__intro">
 				<p class="eyebrow">Ce qui nous tient à cœur</p>
@@ -151,10 +148,10 @@ const enBref = [
 								<Image
 									src={valeur.illus}
 									alt=""
-									widths={[152]}
-									sizes="76px"
+									widths={[176]}
+									sizes="88px"
 									format="webp"
-									class="illus illus--lg"
+									class="illus valeurs__illus"
 								/>
 								<h3>{valeur.name}</h3>
 								<p class="muted">{valeur.description}</p>
@@ -162,7 +159,7 @@ const enBref = [
 						))
 					}
 				</div>
-				<Scribble text="Des valeurs qui nous font grandir" sparks rotate={-8} class="values__note" />
+				<Scribble text="Des valeurs qui nous font grandir" rotate={-8} class="values__note" />
 			</div>
 		</div>
 	</section>
@@ -224,7 +221,7 @@ const enBref = [
 <style>
 	.hero {
 		position: relative;
-		padding-block: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+		padding-block: clamp(1.25rem, 0.9rem + 2vw, 2.5rem);
 		overflow: hidden;
 	}
 
@@ -250,27 +247,84 @@ const enBref = [
 
 	@media (min-width: 900px) {
 		.hero__inner {
-			grid-template-columns: 1fr 1.05fr;
-			gap: 1.5rem;
+			grid-template-columns: 0.92fr 1.08fr;
+			gap: 1.25rem;
 		}
 
 		.hero :global(.hero__illus) {
 			order: 0;
 			width: 100%;
-			max-width: 560px;
+			max-width: 620px;
 			justify-self: end;
 		}
 	}
 
+	/* Les cercles décoratifs vivent dans un calque rogné : laissés libres, ils
+	   élargiraient le document et créeraient un défilement horizontal. */
+	.decor {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		pointer-events: none;
+		z-index: -1;
+	}
+
+	/* Positions relevées sur la charte : un cercle lavande derrière
+	   l'illustration, un second sous le bloc de texte. */
+	.hero__blob--bas {
+		inset-block-end: -38%;
+		inset-inline-start: 24%;
+		width: 26%;
+	}
+
+	.histoire {
+		position: relative;
+		padding-block-start: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);
+	}
+
+	/* Le gros cercle qui déborde du bord gauche, au niveau de « Notre histoire ». */
+	.histoire__blob {
+		inset-block-start: 12%;
+		inset-inline-start: -14%;
+		width: 26%;
+	}
+
+	.histoire__lien {
+		margin-top: 0.5rem;
+	}
+
+	.valeurs {
+		position: relative;
+		padding-block-start: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+	}
+
+	.valeurs :global(.valeurs__illus) {
+		width: 88px;
+		height: 88px;
+		margin-bottom: 0.6rem;
+	}
+
+	.valeurs__blob--droite {
+		inset-block-start: -8%;
+		inset-inline-end: -8%;
+		width: 34%;
+	}
+
+	.valeurs__blob--gauche {
+		inset-block-end: -18%;
+		inset-inline-start: -10%;
+		width: 22%;
+	}
+
 	.split {
 		display: grid;
-		gap: 1.75rem;
+		gap: 1.5rem;
 	}
 
 	@media (min-width: 900px) {
 		.split {
-			grid-template-columns: 1.5fr 1fr;
-			gap: 2.5rem;
+			grid-template-columns: 1.35fr 1fr;
+			gap: 2rem;
 			align-items: start;
 		}
 	}
@@ -280,13 +334,13 @@ const enBref = [
 		border: 1px solid var(--bb-border);
 		border-radius: var(--bb-radius-lg);
 		box-shadow: var(--bb-shadow);
-		padding: 1.75rem;
+		padding: 1.4rem;
 	}
 
 	.facts dl {
 		margin: 0;
 		display: grid;
-		gap: 1.15rem;
+		gap: 0.95rem;
 	}
 
 	.facts__row {
@@ -331,9 +385,9 @@ const enBref = [
 	@media (min-width: 1280px) {
 		.values :global(.values__note) {
 			position: absolute;
-			inset-block-start: 1rem;
-			inset-inline-start: calc(100% + 0.5rem);
-			width: 13ch;
+			inset-block-start: 1.25rem;
+			inset-inline-start: calc(100% - 1.5rem);
+			width: 10ch;
 			margin: 0;
 			text-align: start;
 		}

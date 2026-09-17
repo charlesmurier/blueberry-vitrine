@@ -12,23 +12,23 @@
 	--bb-ink: #2a2027;
 	--bb-muted: #6b5f68;
 	--bb-bg: #ffffff;
-	--bb-bg-page: #fcfaff;
-	--bb-bg-soft: #f8f5fd;
+	--bb-bg-page: #fcfbfe;
+	--bb-bg-soft: #fcfbfe;
 	--bb-bg-lav: #f1ecfc;
 	--bb-border: #ece6f7;
 
-	/* Taches colorées diffuses du fond : volontairement très désaturées,
-	   elles doivent se deviner sans jamais concurrencer le texte. */
-	--bb-blob-violet: #ddd2fb;
-	--bb-blob-peach: #ffdcc6;
-	--bb-blob-pink: #f9d8ee;
+	/* Relevé sur la charte : le fond est blanc, et les taches décoratives
+	   sont toutes lavande — la pointe de pêche ne sert qu'aux bords. */
+	--bb-blob: #eae3fd;
+	--bb-blob-soft: #f1ecfe;
+	--bb-blob-peach: #ffefe6;
 
 	--bb-radius: 18px;
 	--bb-radius-lg: 26px;
 	--bb-shadow: 0 1px 2px rgb(41 16 70 / 5%), 0 10px 30px rgb(41 16 70 / 6%);
 	--bb-shadow-lift: 0 2px 6px rgb(41 16 70 / 8%), 0 20px 48px rgb(41 16 70 / 13%);
 
-	--bb-max: 1140px;
+	--bb-max: 1180px;
 	--bb-gutter: 20px;
 
 	--bb-font-head: 'Outfit', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -86,17 +86,17 @@ h4 {
 }
 
 h1 {
-	font-size: clamp(2rem, 1.4rem + 3vw, 3.4rem);
+	font-size: clamp(2.1rem, 1.35rem + 3.9vw, 4.6rem);
 	font-weight: 800;
 }
 
 h2 {
-	font-size: clamp(1.5rem, 1.15rem + 1.6vw, 2.3rem);
+	font-size: clamp(1.6rem, 1.2rem + 2.2vw, 2.9rem);
 	font-weight: 800;
 }
 
 h3 {
-	font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.2rem);
+	font-size: clamp(1.1rem, 1rem + 0.5vw, 1.32rem);
 	font-weight: 700;
 }
 
@@ -116,50 +116,26 @@ p {
 	border-radius: 4px;
 }
 
-/* ---------- Décor de fond ---------- */
+/* ---------- Décor de fond ----------
+   Des cercles lavande très pâles, posés section par section comme sur la
+   charte. Un calque fixe pleine page teinterait tout l'écran : le fond doit
+   rester blanc partout ailleurs. */
 
-/* z-index négatif plutôt qu'un calque au-dessus : le contenu reste dans le
-   contexte d'empilement racine, sans quoi `mix-blend-mode` sur les
-   illustrations n'aurait plus le fond de page comme toile de fond. */
-.page-blobs {
-	position: fixed;
-	inset: 0;
-	z-index: -1;
-	overflow: hidden;
-	pointer-events: none;
-}
-
-.page-blobs span {
+.blob {
 	position: absolute;
+	aspect-ratio: 1;
 	border-radius: 50%;
-	filter: blur(80px);
+	pointer-events: none;
+	z-index: -1;
+	background: radial-gradient(circle, var(--bb-blob) 0%, rgb(234 227 253 / 0%) 70%);
 }
 
-.page-blobs span:nth-child(1) {
-	width: 46vw;
-	height: 46vw;
-	top: -14vw;
-	left: -12vw;
-	background: var(--bb-blob-violet);
-	opacity: 0.5;
+.blob--soft {
+	background: radial-gradient(circle, var(--bb-blob-soft) 0%, rgb(241 236 254 / 0%) 70%);
 }
 
-.page-blobs span:nth-child(2) {
-	width: 34vw;
-	height: 34vw;
-	top: 22vh;
-	right: -14vw;
-	background: var(--bb-blob-peach);
-	opacity: 0.4;
-}
-
-.page-blobs span:nth-child(3) {
-	width: 40vw;
-	height: 40vw;
-	bottom: -16vw;
-	left: 10vw;
-	background: var(--bb-blob-pink);
-	opacity: 0.32;
+.blob--peach {
+	background: radial-gradient(circle, var(--bb-blob-peach) 0%, rgb(255 239 230 / 0%) 70%);
 }
 
 /* ---------- Mise en page ---------- */
@@ -172,7 +148,7 @@ p {
 }
 
 .section {
-	padding-block: clamp(2.5rem, 1.9rem + 3.8vw, 4.5rem);
+	padding-block: clamp(1.9rem, 1.5rem + 2vw, 3rem);
 }
 
 .section--soft {
@@ -186,7 +162,7 @@ p {
 
 .section__intro {
 	max-width: 62ch;
-	margin-bottom: 2rem;
+	margin-bottom: 1.5rem;
 }
 
 .eyebrow {
@@ -204,7 +180,7 @@ p {
 }
 
 .lead {
-	font-size: clamp(0.98rem, 0.95rem + 0.25vw, 1.12rem);
+	font-size: clamp(1rem, 0.95rem + 0.45vw, 1.2rem);
 	color: var(--bb-muted);
 }
 
@@ -449,7 +425,7 @@ p {
 	background: #fff;
 	border: 1px solid var(--bb-border);
 	border-radius: var(--bb-radius);
-	padding: 1.5rem;
+	padding: 1.35rem;
 	box-shadow: var(--bb-shadow);
 }
 
@@ -492,7 +468,7 @@ p {
 
 .muted {
 	color: var(--bb-muted);
-	font-size: 0.95rem;
+	font-size: 1rem;
 }
 
 .prose :where(h2, h3) {

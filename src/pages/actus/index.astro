@@ -40,7 +40,6 @@ const categories = [...new Set(actus.map((entry) => entry.data.category))].sort(
 					sizes="(max-width: 900px) 80vw, 430px"
 					format="webp"
 					loading="eager"
-					class="blend-white"
 				/>
 				<Scribble text="Good vibes seulement !" sparks rotate={-5} class="page-head__note" />
 			</div>
@@ -231,8 +230,8 @@ const categories = [...new Set(actus.map((entry) => entry.data.category))].sort(
 
 		.page-head__visual :global(.page-head__note) {
 			position: absolute;
-			top: 1.5rem;
-			inset-inline-start: -3.5rem;
+			top: 0.5rem;
+			inset-inline-start: -1rem;
 			max-width: 9ch;
 			margin: 0;
 			text-align: start;
