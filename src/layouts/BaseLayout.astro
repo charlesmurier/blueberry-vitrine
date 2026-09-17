@@ -44,6 +44,23 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://www.blueber
 
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+		<script is:inline>
+			// Les mails Netlify Identity (confirmation, invitation, mot de passe oublié)
+			// redirigent vers la racine du site avec un token dans le hash. Le widget
+			// n'est chargé ici qu'à la demande pour traiter ce token, car seul lui
+			// reconnaît le hash et ouvre la bonne modale automatiquement.
+			if (/(confirmation|invite|recovery|email_change)_token=/.test(window.location.hash)) {
+				const script = document.createElement('script');
+				script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+				script.onload = () => {
+					window.netlifyIdentity?.on('login', () => {
+						document.location.href = '/admin/';
+					});
+				};
+				document.head.appendChild(script);
+			}
+		</script>
 	</head>
 	<body>
 		<a href="#contenu" class="skip-link">Aller au contenu</a>
