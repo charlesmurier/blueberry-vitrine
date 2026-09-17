@@ -1,40 +1,18 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Icon from '../components/Icon.astro';
 import Scribble from '../components/Scribble.astro';
+import mascotteTelephone from '../assets/illus/mascotte-telephone.png';
 import { company, mapsUrl } from '../data/company';
 
 const moyens = [
+	{ label: 'Email', value: company.email, href: `mailto:${company.email}`, external: false },
+	{ label: 'Téléphone', value: company.phoneDisplay, href: company.phoneLink, external: false },
+	{ label: 'WhatsApp', value: 'Démarrer une discussion', href: company.whatsapp, external: true },
 	{
-		icon: 'mail',
-		label: 'Email',
-		value: company.email,
-		href: `mailto:${company.email}`,
-		hint: 'La voie la plus sûre pour un projet ou une candidature.',
-		external: false,
-	},
-	{
-		icon: 'phone',
-		label: 'Téléphone',
-		value: company.phoneDisplay,
-		href: company.phoneLink,
-		hint: 'Du lundi au vendredi, aux heures de bureau.',
-		external: false,
-	},
-	{
-		icon: 'chat',
-		label: 'WhatsApp',
-		value: 'Démarrer une discussion',
-		href: company.whatsapp,
-		hint: 'Pour un échange rapide, sans formalité.',
-		external: true,
-	},
-	{
-		icon: 'linkedin',
 		label: 'LinkedIn',
 		value: 'Blueberry Digital Services',
 		href: company.linkedin,
-		hint: 'Nos actualités et nos publications.',
 		external: true,
 	},
 ];
@@ -45,38 +23,47 @@ const moyens = [
 	description="Contactez Blueberry Digital Services à Mougins, Sophia-Antipolis : par email, téléphone, WhatsApp ou LinkedIn."
 >
 	<section class="page-head">
-		<div class="container page-head__inner">
-			<div>
-				<h1>Parlons de votre <span class="accent-word">projet</span></h1>
-				<p class="lead">
-					Une question, un besoin d’accompagnement, une candidature ? Écrivez-nous, nous répondons
-					rapidement.
-				</p>
-			</div>
-			<Scribble text="On répond vite, promis !" sparks rotate={-4} class="page-head__note" />
+		<div class="container">
+			<h1>Contactez-nous</h1>
+			<p class="lead">
+				Un projet, une question ou l’envie de rejoindre Blueberry ?<br />
+				Que vous soyez une entreprise ou un professionnel de la tech, écrivez-nous.
+			</p>
 		</div>
 	</section>
 
 	<section class="section">
-		<div class="container">
-			<div class="grid grid--2">
+		<div class="container contact-grid">
+			<ul class="moyens">
 				{
 					moyens.map((moyen) => (
-						<a
-							class="contact-card"
-							href={moyen.href}
-							target={moyen.external ? '_blank' : undefined}
-							rel={moyen.external ? 'noopener' : undefined}
-						>
-							<span class="icon-tile">
-								<Icon name={moyen.icon} />
-							</span>
-							<span class="contact-card__label">{moyen.label}</span>
-							<span class="contact-card__value">{moyen.value}</span>
-							<span class="contact-card__hint">{moyen.hint}</span>
-						</a>
+						<li>
+							<a
+								class="moyen"
+								href={moyen.href}
+								target={moyen.external ? '_blank' : undefined}
+								rel={moyen.external ? 'noopener' : undefined}
+							>
+								<span class="moyen__label">{moyen.label}</span>
+								<span class="moyen__value">{moyen.value}</span>
+								<span class="moyen__arrow" aria-hidden="true">→</span>
+							</a>
+						</li>
 					))
 				}
+			</ul>
+
+			<div class="contact-visual">
+				<Image
+					src={mascotteTelephone}
+					alt=""
+					widths={[320, 640]}
+					sizes="(max-width: 900px) 200px, 280px"
+					format="webp"
+					loading="eager"
+					class="contact-visual__mascotte"
+				/>
+				<Scribble text="On répond vite, promis !" sparks rotate={-4} class="contact-visual__note" />
 			</div>
 		</div>
 	</section>
@@ -99,8 +86,8 @@ const moyens = [
 			<aside class="card recruit-note">
 				<h3>Vous postulez ?</h3>
 				<p class="muted">
-					Nous n’avons pas de liste d’offres en ligne. Envoyez-nous votre CV en précisant ce que vous
-					recherchez : chaque candidature est étudiée individuellement.
+					Envoyez-nous votre CV ou votre LinkedIn en précisant ce que vous recherchez : chaque
+					candidature est étudiée avec attention.
 				</p>
 				<a href="/nous-rejoindre" class="btn btn--ghost">Voir la page Nous rejoindre</a>
 			</aside>
@@ -109,92 +96,180 @@ const moyens = [
 </BaseLayout>
 
 <style>
+	/* La page tient en trois blocs courts : avec le rythme vertical par défaut,
+	   elle passait plus de temps à respirer qu'à dire quelque chose. On
+	   resserre l'en-tête et les deux sections. */
 	.page-head {
-		padding-block: clamp(2rem, 1.6rem + 2.5vw, 3.5rem) clamp(1.25rem, 1rem + 1.5vw, 2rem);
+		padding-block: clamp(1rem, 0.8rem + 1.2vw, 1.75rem) 0.5rem;
 	}
 
-	.page-head__inner {
-		display: grid;
-		gap: 1rem;
-		align-items: center;
+	.section {
+		padding-block: clamp(1.1rem, 0.9rem + 1vw, 1.75rem);
+	}
+
+	.page-head + .section {
+		padding-block-start: 0.75rem;
 	}
 
 	.page-head .lead {
 		max-width: 58ch;
 	}
 
-	.page-head :global(.page-head__note) {
-		max-width: 18ch;
+	.contact-grid {
+		display: grid;
+		gap: 1.25rem;
+		align-items: center;
 	}
 
+	/* Sous 900px la mascotte et sa note passent sous la liste, côte à côte :
+	   empilées elles doubleraient la hauteur du bloc. */
+	.contact-visual {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	.contact-visual :global(.contact-visual__mascotte) {
+		display: block;
+		width: min(48vw, 200px);
+		height: auto;
+	}
+
+	.contact-visual :global(.contact-visual__note) {
+		max-width: 12ch;
+	}
+
+	/* La liste est bornée à 44rem : en `1fr` sa colonne resterait pleine largeur
+	   et la mascotte partirait se coller au bord du conteneur. On borne la
+	   colonne elle-même pour que les deux blocs restent voisins. */
 	@media (min-width: 900px) {
-		.page-head__inner {
-			grid-template-columns: 1.5fr 0.5fr;
-			gap: 2rem;
+		.contact-grid {
+			grid-template-columns: minmax(0, 44rem) minmax(0, 280px);
+			justify-content: start;
+			gap: 2.5rem;
+		}
+
+		.contact-visual {
+			flex-direction: column;
+			gap: 0.25rem;
+		}
+
+		.contact-visual :global(.contact-visual__mascotte) {
+			width: 280px;
+		}
+
+		.contact-visual :global(.contact-visual__note) {
+			max-width: 18ch;
 		}
 	}
 
-	.contact-card {
-		display: block;
-		background: #fff;
-		border: 1px solid var(--bb-border);
-		border-radius: var(--bb-radius);
-		padding: 1.25rem;
-		box-shadow: var(--bb-shadow);
+	/* Quatre lignes d'index plutôt que quatre cartes à picto : un moyen de
+	   contact se lit sur sa valeur, sans picto ni phrase d'explication. La
+	   liste est bornée pour que la flèche reste près du texte sur grand écran. */
+	.moyens {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		max-width: 44rem;
+		border-block-start: 1px solid var(--bb-border);
+	}
+
+	.moyens li + li {
+		border-block-start: 1px solid var(--bb-border);
+	}
+
+	.moyen {
+		display: grid;
+		column-gap: 1rem;
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-areas:
+			'label arrow'
+			'value arrow';
+		align-items: center;
+		/* Le survol pose un aplat lavande : on le déborde des gouttières pour
+		   qu'il respire autour du texte sans décaler la colonne. */
+		padding: 0.7rem 0.9rem;
+		margin-inline: -0.9rem;
+		border-radius: 14px;
 		text-decoration: none;
 		color: inherit;
-		transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+		transition: background 0.18s ease;
 	}
 
-	.contact-card:hover {
-		transform: translateY(-3px);
-		box-shadow: var(--bb-shadow-lift);
-		border-color: var(--bb-plum-500);
+	.moyen:hover {
+		background: var(--bb-bg-lav);
 	}
 
-	.contact-card__label {
-		display: block;
-		font-size: 0.78rem;
+	.moyen__label {
+		grid-area: label;
+		font-size: 0.72rem;
 		font-weight: 600;
-		letter-spacing: 0.1em;
+		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		color: var(--bb-muted);
-		margin-bottom: 0.3rem;
 	}
 
-	.contact-card__value {
-		display: block;
+	.moyen__value {
+		grid-area: value;
+		margin-block-start: 0.15rem;
 		font-family: var(--bb-font-head);
-		font-size: 1.1rem;
+		font-size: clamp(1.05rem, 1rem + 0.3vw, 1.25rem);
 		font-weight: 700;
 		color: var(--bb-plum-900);
 		overflow-wrap: anywhere;
 	}
 
-	.contact-card__hint {
-		display: block;
-		margin-top: 0.5rem;
-		font-size: 0.9rem;
-		color: var(--bb-muted);
+	.moyen:hover .moyen__value {
+		color: var(--bb-plum-700);
+		text-decoration: underline;
+		text-underline-offset: 4px;
+	}
+
+	.moyen__arrow {
+		grid-area: arrow;
+		font-size: 1.1rem;
+		color: var(--bb-orange);
+		transition: transform 0.18s ease;
+	}
+
+	.moyen:hover .moyen__arrow {
+		transform: translateX(4px);
+	}
+
+	/* Au-delà, le libellé et la valeur tiennent sur un rang. La colonne des
+	   libellés est figée : en `auto` elle se calerait sur le libellé de sa
+	   propre ligne et les valeurs partiraient en escalier. */
+	@media (min-width: 620px) {
+		.moyen {
+			grid-template-columns: 8rem minmax(0, 1fr) auto;
+			grid-template-areas: 'label value arrow';
+			column-gap: 1.25rem;
+			padding-block: 0.8rem;
+		}
+
+		.moyen__value {
+			margin-block-start: 0;
+		}
 	}
 
 	.split {
 		display: grid;
-		gap: 1.5rem;
+		gap: 1.25rem;
 	}
 
 	@media (min-width: 900px) {
 		.split {
 			grid-template-columns: 1.3fr 1fr;
-			gap: 2.25rem;
+			gap: 2rem;
 			align-items: start;
 		}
 	}
 
 	address {
 		font-style: normal;
-		line-height: 1.7;
-		margin-bottom: 1.25rem;
+		line-height: 1.6;
+		margin-bottom: 1rem;
 		color: var(--bb-ink);
 	}
 

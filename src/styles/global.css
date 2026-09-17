@@ -195,8 +195,7 @@ main {
 
 @media (min-width: 620px) {
 	.grid--2,
-	.grid--4,
-	.grid--5 {
+	.grid--4 {
 		grid-template-columns: repeat(2, 1fr);
 	}
 }
@@ -208,16 +207,6 @@ main {
 
 	.grid--4 {
 		grid-template-columns: repeat(4, 1fr);
-	}
-
-	.grid--5 {
-		grid-template-columns: repeat(3, 1fr);
-	}
-}
-
-@media (min-width: 1060px) {
-	.grid--5 {
-		grid-template-columns: repeat(5, 1fr);
 	}
 }
 
@@ -440,16 +429,6 @@ main {
 	margin-bottom: 0;
 }
 
-.card--lift {
-	transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-}
-
-.card--lift:hover {
-	transform: translateY(-4px);
-	border-color: var(--bb-border-strong);
-	box-shadow: var(--bb-shadow-lift);
-}
-
 /* ---------- Mascotte sur fond clair ----------
    Les visuels fournis ont un fond blanc plein et non transparent.
    « multiply » neutralise ce blanc, à condition de rester sur fond clair. */
@@ -481,8 +460,15 @@ main {
 	color: var(--bb-muted);
 }
 
+/* La respiration sert à séparer un titre du paragraphe précédent : en tête de
+   bloc elle ne fait que décaler la colonne (et désaligner le titre de celui de
+   la colonne voisine). */
 .prose :where(h2, h3) {
 	margin-top: 2rem;
+}
+
+.prose > :first-child {
+	margin-top: 0;
 }
 
 .prose img {

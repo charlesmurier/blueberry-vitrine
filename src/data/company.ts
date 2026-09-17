@@ -27,36 +27,11 @@ export const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encode
 )}`;
 
 export const sectors = [
-	{
-		illus: automobile,
-		name: 'Automobile',
-		description:
-			'Systèmes embarqués, connectivité et logiciels critiques pour les acteurs de la mobilité.',
-	},
-	{
-		illus: aerien,
-		name: 'Aérien',
-		description:
-			'Systèmes avioniques, logiciels embarqués et outils de simulation pour l’aéronautique.',
-	},
-	{
-		illus: defense,
-		name: 'Défense',
-		description:
-			'Projets exigeants où la robustesse, la sûreté de fonctionnement et la confidentialité priment.',
-	},
-	{
-		illus: espace,
-		name: 'Espace',
-		description:
-			'Logiciels sol et bord, traitement de données satellitaires et outils de simulation.',
-	},
-	{
-		illus: telecoms,
-		name: 'Télécommunications',
-		description:
-			'Réseaux, protocoles et plateformes capables d’encaisser la montée en charge.',
-	},
+	{ illus: automobile, name: 'Automobile' },
+	{ illus: aerien, name: 'Aérien' },
+	{ illus: defense, name: 'Défense' },
+	{ illus: espace, name: 'Espace' },
+	{ illus: telecoms, name: 'Télécommunications' },
 ] as const;
 
 /** Libellé court des secteurs, pour la fiche « en bref ». */

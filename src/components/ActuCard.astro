@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { entry, eager = false } = Astro.props;
-const { title, date, category, excerpt, cover, coverAlt } = entry.data;
+const { title, date, excerpt, cover, coverAlt } = entry.data;
 
 const dateLabel = date.toLocaleDateString('fr-FR', {
 	day: 'numeric',
@@ -17,9 +17,9 @@ const dateLabel = date.toLocaleDateString('fr-FR', {
 	year: 'numeric',
 });
 
-/* Matière première du filtre de la page actu : accents retirés pour qu'une
-   recherche « evenement » trouve « Événements ». */
-const haystack = [title, excerpt, category]
+/* Matière première de la recherche de la page actu : accents retirés pour
+   qu'une recherche « evenement » trouve « Événements ». */
+const haystack = [title, excerpt]
 	.filter(Boolean)
 	.join(' ')
 	.toLowerCase()
@@ -27,7 +27,7 @@ const haystack = [title, excerpt, category]
 	.replace(/\p{Diacritic}/gu, '');
 ---
 
-<article class="actu-card" data-actu data-category={category} data-haystack={haystack}>
+<article class="actu-card" data-actu data-haystack={haystack}>
 	<a href={`/actus/${entry.id}`} class="actu-card__link">
 		<div class="actu-card__media">
 			{
@@ -46,7 +46,6 @@ const haystack = [title, excerpt, category]
 					</div>
 				)
 			}
-			<span class="actu-card__badge">{category}</span>
 		</div>
 
 		<div class="actu-card__body">
@@ -85,7 +84,7 @@ const haystack = [title, excerpt, category]
 
 	.actu-card__media {
 		position: relative;
-		aspect-ratio: 4 / 3;
+		aspect-ratio: 16 / 10;
 		background: var(--bb-bg-lav);
 		overflow: hidden;
 	}
@@ -106,47 +105,39 @@ const haystack = [title, excerpt, category]
 		display: grid;
 		place-items: center;
 		height: 100%;
-		font-size: 2.5rem;
-	}
-
-	.actu-card__badge {
-		position: absolute;
-		left: 0.75rem;
-		bottom: 0.75rem;
-		background: rgb(255 255 255 / 94%);
-		color: var(--bb-plum-700);
-		font-family: var(--bb-font-head);
-		font-size: 0.74rem;
-		font-weight: 700;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		padding: 0.3rem 0.65rem;
-		border-radius: 999px;
+		font-size: 2.2rem;
 	}
 
 	.actu-card__body {
 		display: flex;
 		flex-direction: column;
 		flex: 1;
-		padding: 1.1rem;
+		padding: 0.95rem 1rem;
 	}
 
 	.actu-card__body time {
 		display: block;
-		font-size: 0.82rem;
+		font-size: 0.8rem;
 		color: var(--bb-muted);
-		margin-bottom: 0.35rem;
+		margin-bottom: 0.25rem;
 	}
 
 	.actu-card__body h3 {
-		font-size: 1.1rem;
-		margin-bottom: 0.4rem;
+		font-size: 1.05rem;
+		margin-bottom: 0.3rem;
 	}
 
+	/* Un résumé bavard ne doit pas étirer toute la rangée : trois lignes, puis
+	   l'article prend le relais. */
 	.actu-card__body p {
-		font-size: 0.91rem;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
+		overflow: hidden;
+		font-size: 0.89rem;
 		color: var(--bb-muted);
-		margin-bottom: 0.75rem;
+		margin-bottom: 0.6rem;
 	}
 
 	.actu-card__more {

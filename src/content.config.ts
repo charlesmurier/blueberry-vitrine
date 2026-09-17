@@ -7,7 +7,6 @@ const actus = defineCollection({
 		z.object({
 			title: z.string(),
 			date: z.date(),
-			category: z.enum(['Sorties', 'Événements', 'Vie de l’entreprise']).default('Vie de l’entreprise'),
 			excerpt: z.string().optional(),
 			cover: image().optional(),
 			coverAlt: z.string().optional(),

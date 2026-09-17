@@ -1,7 +1,6 @@
 ---
 title: Îles de Lérins
 date: 2025-08-09
-category: Sorties
 excerpt: La traditionnelle sortie bateau annuelle, entre les îles de Lérins, Saint-Tropez et le Cap d'Antibes.
 cover: /src/assets/actus/lerins-iles.jpg
 coverAlt: Vue des îles de Lérins depuis la mer

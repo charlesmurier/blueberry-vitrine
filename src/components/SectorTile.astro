@@ -1,0 +1,78 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+	illus: ImageMetadata;
+	name: string;
+}
+
+const { illus, name } = Astro.props;
+---
+
+<li class="sector">
+	<Image
+		src={illus}
+		alt=""
+		widths={[180, 360]}
+		sizes="(min-width: 900px) 180px, 148px"
+		format="webp"
+		loading="lazy"
+		class="sector__illus"
+	/>
+	<p class="sector__name">{name}</p>
+</li>
+
+<style>
+	/* Les illustrations sont déjà des tuiles : fond lavande et coins arrondis
+	   sont dans le PNG. Tout cadre ajouté autour (rond, carte, bordure) laisse
+	   voir le carré de l'image par-dessous — d'où le parti pris de les poser
+	   directement sur la page. */
+	.sector {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.55rem;
+		text-align: center;
+	}
+
+	.sector :global(.sector__illus) {
+		display: block;
+		/* Carré imposé : deux des cinq sources font 355×360, `contain` absorbe
+		   l'écart sans déformer et garde les libellés sur une même ligne. */
+		width: min(100%, 148px);
+		aspect-ratio: 1;
+		height: auto;
+		object-fit: contain;
+		transition: transform 0.2s ease;
+	}
+
+	.sector:hover :global(.sector__illus) {
+		transform: translateY(-3px);
+	}
+
+	.sector__name {
+		margin: 0;
+		font-family: var(--bb-font-head);
+		font-weight: 700;
+		font-size: 0.95rem;
+		line-height: 1.25;
+		letter-spacing: -0.01em;
+		color: var(--bb-plum-900);
+		text-wrap: balance;
+	}
+
+	@media (min-width: 900px) {
+		.sector {
+			gap: 0.65rem;
+		}
+
+		.sector :global(.sector__illus) {
+			width: min(100%, 180px);
+		}
+
+		.sector__name {
+			font-size: 1rem;
+		}
+	}
+</style>

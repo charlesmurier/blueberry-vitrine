@@ -2,11 +2,10 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectorCard from '../components/SectorCard.astro';
+import SectorTile from '../components/SectorTile.astro';
 import ActuCard from '../components/ActuCard.astro';
 import CTABanner from '../components/CTABanner.astro';
 import Scribble from '../components/Scribble.astro';
-import Icon from '../components/Icon.astro';
 import OfficeVideo from '../components/OfficeVideo.astro';
 import heroBureau from '../assets/illus/hero-bureau.png';
 import { sectors, sectorsLabel } from '../data/company';
@@ -17,27 +16,27 @@ const dernieresActus = (await getCollection('actus'))
 
 const valeurs = [
 	{
-		name: 'Expertise',
-		description:
-			'Une expertise technique de pointe, entretenue en continu pour accompagner des projets exigeants.',
-	},
-	{
 		name: 'Proximité',
 		description:
-			'Une structure à taille humaine où l’on connaît tout le monde, avec une direction toujours accessible.',
+			'Une structure à taille humaine, avec des échanges directs et une direction accessible, aussi bien pour nos consultants que pour nos clients.',
+	},
+	{
+		name: 'Expertise',
+		description:
+			'Des consultants expérimentés et des compétences techniques solides pour répondre aux enjeux de projets exigeants.',
 	},
 	{
 		name: 'Partage',
 		description:
-			'On avance ensemble. Les réussites comme les difficultés d’un projet se partagent.',
+			'Les connaissances, les expériences et les bonnes pratiques se partagent. C’est ce qui nous permet de progresser ensemble.',
 	},
 ];
 
 const enBref = [
-	{ icon: 'briefcase', label: 'En bref', value: 'Conseil en informatique et numérique' },
-	{ icon: 'pin', label: 'Implantation', value: 'Mougins, Sophia-Antipolis (06)' },
-	{ icon: 'sectors', label: 'Secteurs', value: sectorsLabel },
-	{ icon: 'star', label: 'Ce qui nous distingue', value: 'Le bien-être génère la performance' },
+	{ label: 'Métier', value: 'Conseil en informatique et numérique' },
+	{ label: 'Implantation', value: 'Mougins, Sophia-Antipolis (06)' },
+	{ label: 'Secteurs', value: sectorsLabel },
+	{ label: 'Ce qui nous distingue', value: 'Des relations simples et directes' },
 ];
 ---
 
@@ -48,17 +47,20 @@ const enBref = [
 	<section class="hero">
 		<div class="container hero__inner">
 			<div class="hero__text">
-				<h1>Une entreprise à taille <span class="accent-word">humaine</span></h1>
+				<h1>Une structure à taille <span class="accent-word">humaine</span></h1>
 				<p class="lead">
-					Blueberry Digital Services accompagne ses clients sur des projets technologiques exigeants.
-					Notre conviction est simple : le bien-être génère la performance, et l’humain passe avant
-					tout.
+					Blueberry Digital Services accompagne ses clients sur des projets technologiques exigeants
+					grâce à des consultants spécialisés.
+				</p>
+				<p class="lead">
+					Notre fonctionnement est simple : des échanges directs, de la proximité et une direction
+					accessible, avec une attention particulière portée à l’accompagnement de nos consultants.
 				</p>
 				<div class="hero__actions">
 					<a href="/nous-rejoindre" class="btn btn--plum">
 						Nous rejoindre <span class="btn__arrow" aria-hidden="true">→</span>
 					</a>
-					<a href="#secteurs" class="btn btn--ghost">Nos secteurs</a>
+					<a href="/actus" class="btn btn--ghost">L’actu Blueberry</a>
 				</div>
 			</div>
 
@@ -75,7 +77,14 @@ const enBref = [
 					fetchpriority="high"
 					class="hero__illus"
 				/>
-				<Scribble text="Des talents derrière les technologies !" rotate={-6} class="hero__note" />
+				{/* La coupe est écrite dans le texte : les étincelles se posent aux
+				    bords de la boîte, qui doit donc coller à la plus longue ligne. */}
+				<Scribble
+					text={'Des compétences\nderrière chaque projet'}
+					sparks
+					rotate={6}
+					class="hero__note"
+				/>
 			</div>
 		</div>
 	</section>
@@ -83,47 +92,38 @@ const enBref = [
 	<section class="section histoire">
 		<div class="container split">
 			<div class="prose">
-				<h2>Notre histoire</h2>
+				<h2>Blueberry, simplement</h2>
 				<p>
-					Depuis sa création, Blueberry Digital Services a adopté une approche singulière dans un
-					secteur qui l’est rarement : considérer que la performance d’un projet informatique tient
-					d’abord à celles et ceux qui le portent.
+					Chez Blueberry Digital Services, nous pensons que la réussite d’un projet informatique
+					repose avant tout sur les personnes qui le construisent.
 				</p>
 				<p>
-					Nous considérons que chaque projet est avant tout une aventure humaine : une structure à
-					taille humaine où l’on connaît tout le monde, des décisions qui ne trainent pas des mois, et
-					une direction accessible. C’est ce qui guide notre manière de recruter, d’accompagner nos
-					consultants et de travailler avec nos clients.
+					Notre fonctionnement est simple : une structure à taille humaine, des échanges directs,
+					des décisions rapides et une direction accessible. Cela se retrouve aussi bien dans notre
+					façon de recruter et d’accompagner nos consultants que dans notre relation avec nos
+					clients.
 				</p>
 				<p>
-					Nous aidons managers et équipes à anticiper les enjeux du numérique avec une expertise
-					technique de pointe, pour des produits robustes et sécurisés. Notre approche multi-spécialiste
-					nous permet d’intervenir dans <a href="#secteurs">plusieurs secteurs d’activité</a>.
+					Nous accompagnons managers et équipes sur leurs projets numériques, avec une expertise
+					technique solide pour concevoir des solutions robustes et sécurisées. Grâce à nos
+					différentes expertises, nous intervenons dans <a href="#secteurs">plusieurs secteurs
+					d’activité</a>.
 				</p>
 				<p>
-					Nous croyons que l’avenir de l’entreprise est ouvert et collaboratif. Concrètement : une
-					structure à taille humaine où l’on connaît tout le monde, des décisions qui ne mettent pas
-					six mois à être prises, et une direction accessible.
-				</p>
-				<p>
-					Le reste se raconte mieux en images : sorties en bateau, journées au ski, Jeux de
-					Sophia… <a href="/actus">la vie chez Blueberry est sur la page actu</a>.
+					Et parce que la vie chez Blueberry ne se résume pas aux projets, on partage aussi des
+					moments ensemble : sorties en bateau, journées au ski, Jeux de Sophia…
+					<a href="/actus">Découvrez la vie chez Blueberry sur notre page Actus</a>.
 				</p>
 			</div>
 
 			<aside class="facts">
-				<h2 class="visually-hidden">En bref</h2>
+				<h2>En bref</h2>
 				<dl>
 					{
 						enBref.map((fait) => (
 							<div class="facts__row">
-								<span class="icon-tile icon-tile--sm">
-									<Icon name={fait.icon} />
-								</span>
-								<div>
-									<dt>{fait.label}</dt>
-									<dd>{fait.value}</dd>
-								</div>
+								<dt>{fait.label}</dt>
+								<dd>{fait.value}</dd>
 							</div>
 						))
 					}
@@ -143,7 +143,7 @@ const enBref = [
 					<div class="values__cards">
 						{
 							valeurs.map((valeur) => (
-								<article class="card card--lift values__card">
+								<article class="card values__card">
 									<h3>{valeur.name}</h3>
 									<p class="muted">{valeur.description}</p>
 								</article>
@@ -152,27 +152,26 @@ const enBref = [
 					</div>
 					<div class="values__media">
 						<OfficeVideo />
-						<Scribble text="Des valeurs qui nous font grandir" rotate={-8} class="values__note" />
+						<Scribble text="Des valeurs qui nous font grandir" sparks rotate={-8} class="values__note" />
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<section class="section" id="secteurs">
+	<section class="section secteurs" id="secteurs">
 		<div class="container">
 			<div class="section__intro">
 				<h2>Nos secteurs d’activité</h2>
 				<p class="lead">
-					Une approche multi-spécialiste qui nous permet de proposer des services à forte valeur
-					ajoutée dans des domaines où la qualité, la robustesse et la sécurité ne sont pas
-					négociables.
+					Nos consultants interviennent principalement sur des projets de développement logiciel,
+					dans des secteurs où les enjeux techniques et les contraintes métier sont importants.
 				</p>
 			</div>
 
-			<div class="grid grid--5">
-				{sectors.map((sector) => <SectorCard {...sector} />)}
-			</div>
+			<ul class="secteurs__list">
+				{sectors.map((sector) => <SectorTile {...sector} />)}
+			</ul>
 		</div>
 	</section>
 
@@ -252,12 +251,22 @@ const enBref = [
 		mask-image: linear-gradient(180deg, #000 86%, transparent 100%);
 	}
 
-	/* Sous 900px la note passe sous l'illustration : à sa place en absolu, elle
-	   chevaucherait la mascotte. */
+	/* La note se pose en biais dans le coin haut droit de l'illustration. Le
+	   PNG y est transparent jusqu'aux pointes de la mascotte, qui ne montent
+	   qu'à 12 % de la hauteur : la note mord sur ce vide et déborde au-dessus
+	   de l'image, dans la respiration de la section. L'écart au bord droit
+	   dégage l'étincelle de fin, qui sort de la boîte d'environ 1,35 em. */
 	.hero :global(.hero__note) {
-		display: block;
-		max-width: 22ch;
-		margin: 0.5rem auto 0;
+		position: absolute;
+		inset-block-start: -0.4em;
+		inset-inline-end: 1.5em;
+		margin: 0;
+		/* Les étincelles se posent aux coins hauts de la boîte, donc de part et
+		   d'autre de la première ligne : la boîte se règle sur la plus longue
+		   ligne (coupe écrite dans le texte) et les lignes sont centrées, sinon
+		   l'une des deux étincelles se retrouve à distance du texte. */
+		white-space: pre-line;
+		width: max-content;
 		text-align: center;
 	}
 
@@ -279,20 +288,81 @@ const enBref = [
 		.hero :global(.hero__illus) {
 			width: 100%;
 		}
+	}
+
+	/* Sur deux lignes la note est plus large que le coin libre, d'où la bande
+	   réservée à droite dans laquelle elle déborde : la colonne s'élargit
+	   d'autant, l'illustration garde la largeur qu'elle avait. Elle n'a alors
+	   plus besoin de remonter au-dessus de l'image. */
+	@media (min-width: 1100px) {
+		.hero__inner {
+			grid-template-columns: 1fr minmax(0, 560px);
+		}
+
+		.hero__visual {
+			max-width: 560px;
+			/* La colonne s'élargit d'autant que la bande : l'illustration garde
+			   sa largeur et la note s'écarte de la tête du personnage. */
+			padding-inline-end: 5rem;
+		}
 
 		.hero :global(.hero__note) {
-			position: absolute;
-			inset-block-start: 4%;
-			inset-inline-end: -1rem;
-			max-width: 11ch;
-			margin: 0;
-			text-align: start;
+			inset-block-start: 0;
+			inset-inline-end: 1.6em;
 		}
 	}
 
 	.histoire {
 		position: relative;
 		padding-block-start: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);
+	}
+
+	.secteurs {
+		position: relative;
+	}
+
+	.secteurs .section__intro {
+		margin-bottom: 1.1rem;
+	}
+
+	/* Cinq secteurs ne se répartissent en rangées pleines qu'à partir de cinq
+	   colonnes : en dessous il reste toujours un reliquat. Une grille le
+	   laisserait pendre à gauche, d'où le flex, qui centre la dernière rangée.
+	   La largeur des tuiles est calculée pour retomber sur un nombre fixe par
+	   rangée — sans elle, le nombre dépendrait de la largeur disponible.
+	   Les tuiles n'ayant pas de cadre, c'est l'écart qui fait la structure :
+	   la gouttière de ligne est plus large que celle de colonne. */
+	.secteurs__list {
+		--sector-gap: 1rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: flex-start;
+		gap: 1.75rem var(--sector-gap);
+	}
+
+	.secteurs__list > :global(li) {
+		flex: 0 0 calc((100% - var(--sector-gap)) / 2);
+	}
+
+	@media (min-width: 560px) {
+		.secteurs__list > :global(li) {
+			flex-basis: calc((100% - 2 * var(--sector-gap)) / 3);
+		}
+	}
+
+	@media (min-width: 900px) {
+		.secteurs__list {
+			--sector-gap: 1.5rem;
+			gap: var(--sector-gap);
+		}
+
+		.secteurs__list > :global(li) {
+			flex-basis: calc((100% - 4 * var(--sector-gap)) / 5);
+		}
 	}
 
 	.valeurs {
@@ -321,11 +391,6 @@ const enBref = [
 		width: 4px;
 		background: linear-gradient(180deg, var(--bb-plum-500), var(--bb-orange));
 		opacity: 0.45;
-		transition: opacity 0.18s ease;
-	}
-
-	.values__card:hover::before {
-		opacity: 1;
 	}
 
 	.values__card h3 {
@@ -350,12 +415,32 @@ const enBref = [
 		}
 	}
 
+	/* Le panneau reprend le lavande des motifs du décor plutôt qu'un aplat
+	   blanc : il se pose sur la page sans avoir besoin d'ombre. */
+	.histoire .split {
+		/* Partagé par le panneau et la colonne de texte, qui se cale dessus. */
+		--facts-pad: 1.4rem;
+	}
+
 	.facts {
-		background: #fff;
-		border: 1px solid var(--bb-border);
+		background: var(--bb-blob);
 		border-radius: var(--bb-radius-lg);
-		box-shadow: var(--bb-shadow);
-		padding: 1.4rem;
+		padding: var(--facts-pad);
+	}
+
+	.facts h2 {
+		font-size: 1.05rem;
+		margin-bottom: 1rem;
+	}
+
+	/* Le titre du panneau est en retrait de son padding : sans compensation il
+	   tombe plus bas que « Notre histoire ». On descend donc la colonne de texte
+	   d'autant, ce qui laisse le bord du panneau marquer le haut de la ligne.
+	   Sous 900px les colonnes s'empilent, ce décalage n'aurait plus d'objet. */
+	@media (min-width: 900px) {
+		.histoire .prose {
+			padding-block-start: var(--facts-pad);
+		}
 	}
 
 	.facts dl {
@@ -364,21 +449,11 @@ const enBref = [
 	}
 
 	/* Un filet entre chaque entrée : sans lui les quatre lignes flottent dans le
-	   panneau. Le premier bord serait collé au haut de la carte, d'où le `+`. */
+	   panneau. Le premier bord serait collé au titre, d'où le `+`. */
 	.facts__row + .facts__row {
-		border-block-start: 1px solid var(--bb-border);
+		border-block-start: 1px solid var(--bb-border-strong);
 		margin-block-start: 0.9rem;
 		padding-block-start: 0.9rem;
-	}
-
-	.facts__row {
-		display: flex;
-		align-items: flex-start;
-		gap: 0.9rem;
-	}
-
-	.facts__row :global(.icon-tile) {
-		flex-shrink: 0;
 	}
 
 	.facts dt {
@@ -399,18 +474,28 @@ const enBref = [
 	}
 
 	/* La note vit sous la vidéo : centrée au milieu du bloc, elle tombait dans
-	   la gouttière entre les deux colonnes. */
+	   la gouttière entre les deux colonnes. L'écart est plus large qu'une
+	   gouttière ordinaire car la note est inclinée : son coin haut droit et son
+	   étincelle montent d'une trentaine de pixels au-dessus de sa boîte, et
+	   venaient mordre sur la vidéo. */
 	.values__media {
 		display: grid;
-		gap: 1.25rem;
+		gap: 2.5rem;
 		align-content: start;
 	}
 
 	.values :global(.values__note) {
 		display: block;
 		justify-self: center;
-		max-width: 20ch;
+		/* Les étincelles se posent aux bords de la boîte : au plus juste de la
+		   ligne la plus longue (« nous font grandir », 6,1 em en Caveat), elles
+		   encadrent le texte au lieu de flotter à distance. */
+		max-width: 14ch;
 		text-align: center;
+		/* Le cadre de la vidéo est remonté d'un cran pour couvrir son losange ;
+		   sans ce rang-là, la note inclinée repasserait dessous. */
+		position: relative;
+		z-index: 2;
 	}
 
 	.actus-head {
@@ -419,10 +504,15 @@ const enBref = [
 		align-items: flex-start;
 		justify-content: space-between;
 		gap: 1rem;
+		/* Sur la marge, pas sur `.section__intro` : dans une ligne flex, la marge
+		   d'un enfant ne dépasse pas la hauteur du plus grand des deux, donc si
+		   le lien est plus haut que le texte elle ne se voyait pas — la grille
+		   se retrouvait collée au bloc. */
+		margin-bottom: 1.5rem;
 	}
 
 	.actus-head .section__intro {
-		margin-bottom: 1.5rem;
+		margin-bottom: 0;
 	}
 
 	.actus-head__link {

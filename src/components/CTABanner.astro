@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Scribble from './Scribble.astro';
-import photo from '../assets/illus/cta-cote-azur.png';
+import photo from '../assets/illus/jds.png';
 
 interface Props {
 	title: string;
@@ -23,7 +23,7 @@ const { title, text, ctaLabel, ctaHref, secondaryLabel, secondaryHref, note } = 
 			<Image
 				src={photo}
 				alt=""
-				widths={[470]}
+				widths={[560, 1120]}
 				sizes="(max-width: 780px) 100vw, 560px"
 				format="webp"
 				loading="lazy"
@@ -58,13 +58,17 @@ const { title, text, ctaLabel, ctaHref, secondaryLabel, secondaryHref, note } = 
 	}
 
 	.cta__panel {
+		/* Repris par la photo en version mobile, qui doit déborder du padding
+		   pour toucher les bords du panneau. */
+		--cta-pad: clamp(1.75rem, 1.2rem + 3vw, 2.5rem);
+
 		position: relative;
 		isolation: isolate;
 		overflow: hidden;
 		border-radius: var(--bb-radius-lg);
 		background: linear-gradient(120deg, #cdc2f3, #e4d9f5 45%, #f3e2e6);
-		padding: clamp(1.5rem, 1.2rem + 2vw, 2.5rem);
-		min-height: 230px;
+		padding: var(--cta-pad);
+		min-height: 280px;
 		display: flex;
 		align-items: center;
 	}
@@ -75,10 +79,13 @@ const { title, text, ctaLabel, ctaHref, secondaryLabel, secondaryHref, note } = 
 		inset-block: 0;
 		inset-inline-end: 0;
 		z-index: -1;
-		width: 62%;
+		width: 52%;
 		height: 100%;
 		object-fit: cover;
-		object-position: 70% center;
+		/* Le bandeau est bien plus large que la photo : le recadrage se fait en
+		   hauteur. Une colonne plus étroite fait moins zoomer l'image, donc laisse
+		   voir plus de hauteur — c'est ce qui garde le groupe entier dans le cadre. */
+		object-position: center 8%;
 		mask-image: linear-gradient(90deg, transparent, #000 32%);
 	}
 
@@ -108,7 +115,7 @@ const { title, text, ctaLabel, ctaHref, secondaryLabel, secondaryHref, note } = 
 
 	@media (min-width: 900px) {
 		.cta__panel {
-			min-height: 265px;
+			min-height: 345px;
 		}
 
 		.cta__panel :global(.cta__note) {
@@ -121,18 +128,36 @@ const { title, text, ctaLabel, ctaHref, secondaryLabel, secondaryHref, note } = 
 		}
 	}
 
-	/* Sous 780px la photo passerait derrière le texte : on la réduit à une
-	   bande basse pour garder le contraste du titre. */
+	/* Sous 780px il n'y a plus la place de mettre la photo à côté du texte. On la
+	   sort du positionnement absolu pour l'empiler sous le contenu : elle est
+	   alors affichée entière, donc aucun recadrage ne peut couper une tête et le
+	   bouton ne peut plus recouvrir un visage. */
 	@media (max-width: 779px) {
-		.cta__panel :global(.cta__photo) {
-			width: 100%;
-			height: 45%;
-			inset-block: auto 0;
-			mask-image: linear-gradient(180deg, transparent, #000 60%);
+		.cta__panel {
+			flex-direction: column;
+			align-items: stretch;
 		}
 
-		.cta__panel {
-			padding-bottom: 7rem;
+		.cta__panel :global(.cta__photo) {
+			position: static;
+			order: 1;
+			z-index: auto;
+			/* Marges négatives : la photo ressort du padding pour aller toucher les
+			   bords arrondis du panneau. */
+			width: calc(100% + var(--cta-pad) * 2);
+			/* Sans ça, le `max-width: 100%` global des images annule le débord et
+			   laisse une bande de dégradé à droite de la photo. */
+			max-width: none;
+			height: auto;
+			/* Vers 780px la photo pleine largeur ferait 500px de haut et écraserait
+			   le reste du bandeau. On la plafonne, en recadrant par le bas : le
+			   premier rang reste entier, seuls les pieds sont rognés. */
+			max-height: 430px;
+			object-position: center top;
+			margin: var(--cta-pad) calc(var(--cta-pad) * -1) calc(var(--cta-pad) * -1);
+			/* Le haut du crâne du monsieur sur le podium est à quelques pixels du
+			   bord de la photo : le fondu doit rester court pour ne pas l'effacer. */
+			mask-image: linear-gradient(180deg, transparent, #000 10%);
 		}
 	}
 </style>

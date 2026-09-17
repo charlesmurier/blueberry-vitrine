@@ -39,12 +39,6 @@ collections:
         time_format: false
         picker_utc: false
 
-      - label: "Catégorie"
-        name: "category"
-        widget: "select"
-        default: "Vie de l’entreprise"
-        options: ["Sorties", "Événements", "Vie de l’entreprise"]
-
       - label: "Résumé"
         name: "excerpt"
         widget: "text"

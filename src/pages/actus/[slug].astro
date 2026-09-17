@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, date, category, excerpt, cover, coverAlt, gallery } = entry.data;
+const { title, date, excerpt, cover, coverAlt, gallery } = entry.data;
 
 const dateLabel = date.toLocaleDateString('fr-FR', {
 	day: 'numeric',
@@ -39,8 +39,8 @@ const dateLabel = date.toLocaleDateString('fr-FR', {
 						<Image
 							src={cover}
 							alt={coverAlt ?? ''}
-							widths={[480, 800, 1200]}
-							sizes="(max-width: 1140px) 100vw, 1100px"
+							widths={[480, 800, 1280]}
+							sizes="(max-width: 680px) 100vw, 640px"
 							format="webp"
 							loading="eager"
 							fetchpriority="high"
@@ -67,8 +67,8 @@ const dateLabel = date.toLocaleDateString('fr-FR', {
 									<Image
 										src={photo.src}
 										alt={photo.caption ?? ''}
-										widths={[400, 800]}
-										sizes="(max-width: 620px) 100vw, 360px"
+										widths={[320, 640]}
+										sizes="(max-width: 620px) 100vw, 300px"
 										format="webp"
 										loading="lazy"
 									/>
@@ -88,12 +88,19 @@ const dateLabel = date.toLocaleDateString('fr-FR', {
 </BaseLayout>
 
 <style>
+	/* Toute la page article tient dans une seule colonne centrée : titre,
+	   couverture et texte partagent la même largeur et les mêmes bords. */
+	.actu {
+		--actu-col: 640px;
+	}
+
 	.actu__head {
 		padding-block: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem) clamp(1rem, 0.85rem + 1vw, 1.5rem);
 	}
 
 	.actu__head-inner {
-		max-width: 780px;
+		max-width: var(--actu-col);
+		margin-inline: auto;
 	}
 
 	.actu__back {
@@ -111,7 +118,8 @@ const dateLabel = date.toLocaleDateString('fr-FR', {
 	}
 
 	.actu__cover {
-		margin: 0 0 1.5rem;
+		max-width: var(--actu-col);
+		margin: 0 auto 1.75rem;
 		border-radius: var(--bb-radius-lg);
 		overflow: hidden;
 		box-shadow: var(--bb-shadow);
@@ -119,17 +127,22 @@ const dateLabel = date.toLocaleDateString('fr-FR', {
 
 	.actu__cover img {
 		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
 		display: block;
 	}
 
 	.actu__body {
-		max-width: 68ch;
+		max-width: var(--actu-col);
+		margin-inline: auto;
 		font-size: 1rem;
 	}
 
+	/* La galerie déborde un peu de la colonne de texte : des vignettes à
+	   640px de large seraient trop petites pour être lisibles. */
 	.actu__gallery {
-		max-width: 100%;
-		margin-top: 2.25rem;
+		max-width: 920px;
+		margin: 2.25rem auto 0;
 	}
 
 	.actu__gallery h2 {
@@ -173,7 +186,10 @@ const dateLabel = date.toLocaleDateString('fr-FR', {
 		color: var(--bb-muted);
 	}
 
+	/* Celui-ci porte aussi .container : sa largeur inclut les gouttières,
+	   qu'il faut rajouter pour que son bord gauche tombe sur le texte. */
 	.actu__footer {
-		margin-top: 2.25rem;
+		max-width: calc(var(--actu-col) + var(--bb-gutter) * 2);
+		margin: 2.25rem auto 0;
 	}
 </style>
