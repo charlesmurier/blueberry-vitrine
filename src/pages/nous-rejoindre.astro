@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Scribble from '../components/Scribble.astro';
-import OfficeVideo from '../components/OfficeVideo.astro';
 import mascotte from '../assets/brand/mascotte.png';
 import illusRemuneration from '../assets/illus/atout-remuneration.png';
 import illusCompetences from '../assets/illus/atout-competences.png';
@@ -36,6 +35,14 @@ const atouts = [
 			'La première technopole d’Europe, entre mer et arrière-pays. Le cadre de travail compte autant que le poste.',
 	},
 ];
+
+/**
+ * Le fil qui relie une carte à la mascotte, relevé sur la maquette : il part
+ * du point posé sur le bord intérieur de la carte, file à l'horizontale puis
+ * s'infléchit vers le centre. Un seul tracé pour les quatre cartes, retourné
+ * par CSS d'un côté (colonne de droite) et de l'autre (cartes du bas).
+ */
+const FIL = 'M11 7C30 10 48 15 74 28';
 
 const objet = encodeURIComponent('Candidature spontanée');
 const corps = encodeURIComponent(
@@ -85,6 +92,10 @@ const corps = encodeURIComponent(
 									<h3>{atout.name}</h3>
 									<p class="muted">{atout.description}</p>
 								</div>
+								<svg class="perk__fil" viewBox="0 0 76 30" aria-hidden="true">
+									<path d={FIL} />
+									<circle cx="6" cy="6" r="6" />
+								</svg>
 							</article>
 						))
 					}
@@ -118,6 +129,10 @@ const corps = encodeURIComponent(
 									<h3>{atout.name}</h3>
 									<p class="muted">{atout.description}</p>
 								</div>
+								<svg class="perk__fil" viewBox="0 0 76 30" aria-hidden="true">
+									<path d={FIL} />
+									<circle cx="6" cy="6" r="6" />
+								</svg>
 							</article>
 						))
 					}
@@ -139,24 +154,6 @@ const corps = encodeURIComponent(
 		</div>
 	</section>
 
-	<section class="section section--soft">
-		<div class="container env">
-			<div class="prose">
-				<h2>Le bien-être génère la performance</h2>
-				<p>
-					Nous croyons que l’avenir de l’entreprise est ouvert et collaboratif. Concrètement : une
-					structure à taille humaine où l’on connaît tout le monde, des décisions qui ne mettent pas
-					six mois à être prises, et une direction accessible.
-				</p>
-				<p>
-					Le reste se raconte mieux en images : sorties en bateau, journées au ski, Jeux de
-					Sophia… <a href="/actus">la vie de l’équipe est sur la page actu</a>.
-				</p>
-			</div>
-
-			<OfficeVideo />
-		</div>
-	</section>
 
 	<section class="section" id="candidater">
 		<div class="container">
@@ -256,6 +253,12 @@ const corps = encodeURIComponent(
 		margin-bottom: 0;
 	}
 
+	/* En colonne unique, les cartes ne sont plus disposées autour de la
+	   mascotte : les fils n'ont plus rien à relier. */
+	.perk__fil {
+		display: none;
+	}
+
 	@media (min-width: 1000px) {
 		.perks {
 			grid-template-columns: 1fr auto 1fr;
@@ -271,50 +274,57 @@ const corps = encodeURIComponent(
 			width: 300px;
 		}
 
-		/* Chaque carte tire un fil vers la mascotte : le point est sur le bord
-		   intérieur, le trait traverse la gouttière de la grille. */
+		/* Chaque carte tire un fil vers la mascotte. Le point est posé à cheval
+		   sur le bord intérieur, à hauteur de la première ligne du titre
+		   (1,35rem de padding + la moitié de son interligne), et non au milieu
+		   de la carte. */
 		.perk {
 			position: relative;
 		}
 
-		.perk::before,
-		.perk::after {
-			content: '';
+		.perk__fil {
+			display: block;
 			position: absolute;
-			inset-block-start: 50%;
-			transform: translateY(-50%);
+			inset-block-start: calc(2.1rem - 6px);
+			width: 76px;
+			height: 30px;
+			/* Le retournement pivote sur le point lui-même : il reste collé au
+			   bord de la carte quel que soit le sens du fil. */
+			transform: scale(var(--fil-x, 1), var(--fil-y, 1));
+			transform-origin: 6px 6px;
+			/* Sur la maquette le fil disparaît derrière la mascotte ; ici elle
+			   n'a pas de fond opaque, d'où ce fondu juste avant elle. */
+			-webkit-mask-image: linear-gradient(90deg, #000 55%, transparent 100%);
+			mask-image: linear-gradient(90deg, #000 55%, transparent 100%);
 		}
 
-		.perk::after {
-			width: 2.5rem;
-			height: 2px;
+		.perk__fil path {
+			fill: none;
+			stroke: var(--bb-border-strong);
+			stroke-width: 2;
 		}
 
-		.perk::before {
-			width: 10px;
-			height: 10px;
-			border-radius: 50%;
-			background: var(--bb-orange);
-			box-shadow: 0 0 0 4px rgb(242 107 33 / 14%);
-			z-index: 1;
+		.perk__fil circle {
+			fill: var(--bb-violet);
 		}
 
-		.perk--start::after {
-			inset-inline-start: 100%;
-			background: linear-gradient(90deg, var(--bb-plum-500), transparent);
+		/* Seconde carte de chaque colonne : le fil remonte vers le centre et le
+		   point passe à l'orange, comme sur la maquette. */
+		.perks__col .perk + .perk {
+			--fil-y: -1;
 		}
 
-		.perk--start::before {
-			inset-inline-start: calc(100% - 5px);
+		.perks__col .perk + .perk .perk__fil circle {
+			fill: var(--bb-orange);
 		}
 
-		.perk--end::after {
-			inset-inline-end: 100%;
-			background: linear-gradient(270deg, var(--bb-plum-500), transparent);
+		.perk--start .perk__fil {
+			inset-inline-start: calc(100% - 6px);
 		}
 
-		.perk--end::before {
-			inset-inline-end: calc(100% - 5px);
+		.perk--end .perk__fil {
+			--fil-x: -1;
+			inset-inline-start: -6px;
 		}
 	}
 
@@ -340,25 +350,6 @@ const corps = encodeURIComponent(
 	@media (min-width: 800px) {
 		.perks__footer :global(.perks__note) {
 			display: inline-block;
-		}
-	}
-
-	/* ---------- Environnement ---------- */
-
-	.env {
-		display: grid;
-		gap: 1.75rem;
-		align-items: center;
-	}
-
-	.env .prose {
-		max-width: 60ch;
-	}
-
-	@media (min-width: 900px) {
-		.env {
-			grid-template-columns: 1fr 1fr;
-			gap: 2.5rem;
 		}
 	}
 

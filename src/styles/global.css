@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Caveat:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Figtree:wght@400;500;600&family=Caveat:wght@600;700&display=swap');
 
 :root {
 	--bb-plum-900: #291046;
@@ -12,16 +12,20 @@
 	--bb-ink: #2a2027;
 	--bb-muted: #6b5f68;
 	--bb-bg: #ffffff;
-	--bb-bg-page: #fcfbfe;
-	--bb-bg-soft: #fcfbfe;
+	--bb-bg-page: #fdfdfe;
 	--bb-bg-lav: #f1ecfc;
 	--bb-border: #ece6f7;
+	/* Même famille que la bordure au repos, juste assez soutenue pour que le
+	   survol d'une carte se lise sans virer au trait plein. */
+	--bb-border-strong: #dccff5;
 
-	/* Relevé sur la charte : le fond est blanc, et les taches décoratives
-	   sont toutes lavande — la pointe de pêche ne sert qu'aux bords. */
-	--bb-blob: #eae3fd;
-	--bb-blob-soft: #f1ecfe;
-	--bb-blob-peach: #ffefe6;
+	/* Relevé pixel par pixel sur la charte : le fond est quasi blanc et les
+	   taches sont des aplats à bord net, lavande pour la plupart, pêche pour
+	   les touches chaudes. Deux intensités par teinte. */
+	--bb-blob: #ede8fe;
+	--bb-blob-soft: #f6f2fe;
+	--bb-blob-peach: #feeee9;
+	--bb-blob-peach-soft: #fef6f2;
 
 	--bb-radius: 18px;
 	--bb-radius-lg: 26px;
@@ -32,7 +36,10 @@
 	--bb-gutter: 20px;
 
 	--bb-font-head: 'Outfit', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-	--bb-font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+	/* Figtree plutôt qu'une grotesque neutre : même famille géométrique
+	   qu'Outfit, donc les paragraphes et les titres semblent dessinés de la
+	   même main, avec une hauteur d'x plus généreuse qui aère le texte long. */
+	--bb-font-body: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 	--bb-font-hand: 'Caveat', 'Segoe Script', cursive;
 }
 
@@ -86,12 +93,12 @@ h4 {
 }
 
 h1 {
-	font-size: clamp(2.1rem, 1.35rem + 3.9vw, 4.6rem);
+	font-size: clamp(1.9rem, 1.5rem + 1.8vw, 3.1rem);
 	font-weight: 800;
 }
 
 h2 {
-	font-size: clamp(1.6rem, 1.2rem + 2.2vw, 2.9rem);
+	font-size: clamp(1.5rem, 1.25rem + 1.2vw, 2.2rem);
 	font-weight: 800;
 }
 
@@ -117,25 +124,17 @@ p {
 }
 
 /* ---------- Décor de fond ----------
-   Des cercles lavande très pâles, posés section par section comme sur la
-   charte. Un calque fixe pleine page teinterait tout l'écran : le fond doit
-   rester blanc partout ailleurs. */
+   Les formes elles-mêmes vivent dans `components/Decor.astro` : un cercle ne
+   sait pas être irrégulier, et la feuille du logo encore moins, donc ce sont
+   des tracés SVG et non des dégradés. Ici on ne pose que le repère dont leur
+   calque a besoin.
 
-.blob {
-	position: absolute;
-	aspect-ratio: 1;
-	border-radius: 50%;
-	pointer-events: none;
-	z-index: -1;
-	background: radial-gradient(circle, var(--bb-blob) 0%, rgb(234 227 253 / 0%) 70%);
-}
+   `main` ne peint surtout pas de fond : le calque est en `z-index: -1`, un
+   fond opaque ici le masquerait entièrement. Le blanc de la page vient de
+   `body`. Même raison pour `.section--soft` plus bas. */
 
-.blob--soft {
-	background: radial-gradient(circle, var(--bb-blob-soft) 0%, rgb(241 236 254 / 0%) 70%);
-}
-
-.blob--peach {
-	background: radial-gradient(circle, var(--bb-blob-peach) 0%, rgb(255 239 230 / 0%) 70%);
+main {
+	position: relative;
 }
 
 /* ---------- Mise en page ---------- */
@@ -151,8 +150,11 @@ p {
 	padding-block: clamp(1.9rem, 1.5rem + 2vw, 3rem);
 }
 
+/* La charte ne découpe pas la page en bandes : une section « douce » laisse
+   simplement passer le décor du fond. La classe reste pour marquer l'intention
+   dans les pages. */
 .section--soft {
-	background: var(--bb-bg-soft);
+	background: transparent;
 }
 
 /* Un en-tête de page porte déjà sa propre respiration : on évite de la doubler. */
@@ -181,6 +183,7 @@ p {
 
 .lead {
 	font-size: clamp(1rem, 0.95rem + 0.45vw, 1.2rem);
+	line-height: 1.6;
 	color: var(--bb-muted);
 }
 
@@ -438,11 +441,12 @@ p {
 }
 
 .card--lift {
-	transition: transform 0.18s ease, box-shadow 0.18s ease;
+	transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .card--lift:hover {
 	transform: translateY(-4px);
+	border-color: var(--bb-border-strong);
 	box-shadow: var(--bb-shadow-lift);
 }
 
@@ -469,6 +473,12 @@ p {
 .muted {
 	color: var(--bb-muted);
 	font-size: 1rem;
+}
+
+/* Sans ça ses <p> restaient dans l'encre par défaut (--bb-ink), plus sombre
+   que le gris utilisé pour le texte courant ailleurs sur le site. */
+.prose p {
+	color: var(--bb-muted);
 }
 
 .prose :where(h2, h3) {

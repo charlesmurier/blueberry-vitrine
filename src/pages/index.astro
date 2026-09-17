@@ -7,10 +7,8 @@ import ActuCard from '../components/ActuCard.astro';
 import CTABanner from '../components/CTABanner.astro';
 import Scribble from '../components/Scribble.astro';
 import Icon from '../components/Icon.astro';
+import OfficeVideo from '../components/OfficeVideo.astro';
 import heroBureau from '../assets/illus/hero-bureau.png';
-import valeurRespect from '../assets/illus/valeur-respect.png';
-import valeurIntegrite from '../assets/illus/valeur-integrite.png';
-import valeurSolidarite from '../assets/illus/valeur-solidarite.png';
 import { sectors, sectorsLabel } from '../data/company';
 
 const dernieresActus = (await getCollection('actus'))
@@ -19,20 +17,17 @@ const dernieresActus = (await getCollection('actus'))
 
 const valeurs = [
 	{
-		illus: valeurRespect,
-		name: 'Respect',
+		name: 'Expertise',
 		description:
-			'Chaque personne apporte une valeur unique à l’équipe, bien au-delà de son rôle professionnel.',
+			'Une expertise technique de pointe, entretenue en continu pour accompagner des projets exigeants.',
 	},
 	{
-		illus: valeurIntegrite,
-		name: 'Intégrité',
+		name: 'Proximité',
 		description:
-			'Des engagements tenus, une parole claire avec nos clients comme avec nos collaborateurs.',
+			'Une structure à taille humaine où l’on connaît tout le monde, avec une direction toujours accessible.',
 	},
 	{
-		illus: valeurSolidarite,
-		name: 'Solidarité',
+		name: 'Partage',
 		description:
 			'On avance ensemble. Les réussites comme les difficultés d’un projet se partagent.',
 	},
@@ -51,12 +46,9 @@ const enBref = [
 	description="Blueberry Digital Services accompagne les projets technologiques exigeants dans l'automobile, l'aérien, la défense, l'espace et les télécommunications. Chez nous, l'humain passe avant tout."
 >
 	<section class="hero">
-		<div class="decor" aria-hidden="true">
-			<span class="blob blob--soft hero__blob hero__blob--bas"></span>
-		</div>
 		<div class="container hero__inner">
 			<div class="hero__text">
-				<h1>Une aventure <span class="accent-word">humaine</span></h1>
+				<h1>Une entreprise à taille <span class="accent-word">humaine</span></h1>
 				<p class="lead">
 					Blueberry Digital Services accompagne ses clients sur des projets technologiques exigeants.
 					Notre conviction est simple : le bien-être génère la performance, et l’humain passe avant
@@ -70,25 +62,25 @@ const enBref = [
 				</div>
 			</div>
 
-			{/* Les pastilles Tech/Humain/Impact et la note manuscrite font partie
-			    de l'illustration de la charte : elles sont dans l'image. */}
-			<Image
-				src={heroBureau}
-				alt=""
-				widths={[498]}
-				sizes="(max-width: 900px) 92vw, 520px"
-				format="webp"
-				loading="eager"
-				fetchpriority="high"
-				class="hero__illus"
-			/>
+			{/* Les pastilles Expertise/Proximité/Partage font partie de
+			    l'illustration ; la note manuscrite, elle, est posée à côté. */}
+			<div class="hero__visual">
+				<Image
+					src={heroBureau}
+					alt=""
+					widths={[480, 960]}
+					sizes="(max-width: 900px) 88vw, 480px"
+					format="webp"
+					loading="eager"
+					fetchpriority="high"
+					class="hero__illus"
+				/>
+				<Scribble text="Des talents derrière les technologies !" rotate={-6} class="hero__note" />
+			</div>
 		</div>
 	</section>
 
 	<section class="section histoire">
-		<div class="decor" aria-hidden="true">
-			<span class="blob histoire__blob"></span>
-		</div>
 		<div class="container split">
 			<div class="prose">
 				<h2>Notre histoire</h2>
@@ -98,13 +90,25 @@ const enBref = [
 					d’abord à celles et ceux qui le portent.
 				</p>
 				<p>
-					Nous considérons que chaque projet est avant tout une aventure humaine, où l’expérience et
-					les compétences de chaque individu sont essentielles pour réussir. C’est ce qui guide notre
-					manière de recruter, d’accompagner nos consultants et de travailler avec nos clients.
+					Nous considérons que chaque projet est avant tout une aventure humaine : une structure à
+					taille humaine où l’on connaît tout le monde, des décisions qui ne trainent pas des mois, et
+					une direction accessible. C’est ce qui guide notre manière de recruter, d’accompagner nos
+					consultants et de travailler avec nos clients.
 				</p>
-				<a href="/notre-histoire" class="btn btn--ghost histoire__lien">
-					Découvrir notre histoire <span class="btn__arrow" aria-hidden="true">→</span>
-				</a>
+				<p>
+					Nous aidons managers et équipes à anticiper les enjeux du numérique avec une expertise
+					technique de pointe, pour des produits robustes et sécurisés. Notre approche multi-spécialiste
+					nous permet d’intervenir dans <a href="#secteurs">plusieurs secteurs d’activité</a>.
+				</p>
+				<p>
+					Nous croyons que l’avenir de l’entreprise est ouvert et collaboratif. Concrètement : une
+					structure à taille humaine où l’on connaît tout le monde, des décisions qui ne mettent pas
+					six mois à être prises, et une direction accessible.
+				</p>
+				<p>
+					Le reste se raconte mieux en images : sorties en bateau, journées au ski, Jeux de
+					Sophia… <a href="/actus">la vie chez Blueberry est sur la page actu</a>.
+				</p>
 			</div>
 
 			<aside class="facts">
@@ -129,35 +133,28 @@ const enBref = [
 	</section>
 
 	<section class="section valeurs">
-		<div class="decor" aria-hidden="true">
-			<span class="blob valeurs__blob valeurs__blob--droite"></span>
-			<span class="blob blob--soft valeurs__blob valeurs__blob--gauche"></span>
-		</div>
 		<div class="container">
 			<div class="section__intro">
 				<h2>Nos valeurs</h2>
 			</div>
 
 			<div class="values">
-				<div class="grid grid--3">
-					{
-						valeurs.map((valeur) => (
-							<article class="card card--lift">
-								<Image
-									src={valeur.illus}
-									alt=""
-									widths={[176]}
-									sizes="88px"
-									format="webp"
-									class="illus valeurs__illus"
-								/>
-								<h3>{valeur.name}</h3>
-								<p class="muted">{valeur.description}</p>
-							</article>
-						))
-					}
+				<div class="split">
+					<div class="values__cards">
+						{
+							valeurs.map((valeur) => (
+								<article class="card card--lift values__card">
+									<h3>{valeur.name}</h3>
+									<p class="muted">{valeur.description}</p>
+								</article>
+							))
+						}
+					</div>
+					<div class="values__media">
+						<OfficeVideo />
+						<Scribble text="Des valeurs qui nous font grandir" rotate={-8} class="values__note" />
+					</div>
 				</div>
-				<Scribble text="Des valeurs qui nous font grandir" rotate={-8} class="values__note" />
 			</div>
 		</div>
 	</section>
@@ -185,7 +182,7 @@ const enBref = [
 				<div class="container">
 					<div class="actus-head">
 						<div class="section__intro">
-							<h2>La vie de l’équipe</h2>
+							<h2>La vie chez Blueberry</h2>
 							<p class="lead">
 								Sorties, événements, moments partagés : ce qui se passe chez nous quand on ne code
 								pas.
@@ -234,43 +231,63 @@ const enBref = [
 		margin-top: 1.5rem;
 	}
 
-	.hero :global(.hero__illus) {
+	.hero__visual {
 		order: -1;
-		width: min(92vw, 420px);
-		height: auto;
+		position: relative;
 		justify-self: center;
+	}
+
+	.hero :global(.hero__illus) {
+		display: block;
+		/* L'illustration est nettement plus haute que celle de l'actu (ratio
+		   1,59 contre 2,05) : on la borne par la largeur pour que les deux
+		   pages affichent un visuel de hauteur comparable. */
+		width: min(88vw, 360px);
+		height: auto;
+		/* Le plan de travail de l'illustration est un aplat opaque qui va d'un
+		   bord à l'autre : sans ce fondu, son rectangle se découpe nettement
+		   sur les taches du décor. Le fondu ne démarre qu'à 86 %, sous le
+		   clavier, pour ne pas effacer la tasse et les pots. */
+		-webkit-mask-image: linear-gradient(180deg, #000 86%, transparent 100%);
+		mask-image: linear-gradient(180deg, #000 86%, transparent 100%);
+	}
+
+	/* Sous 900px la note passe sous l'illustration : à sa place en absolu, elle
+	   chevaucherait la mascotte. */
+	.hero :global(.hero__note) {
+		display: block;
+		max-width: 22ch;
+		margin: 0.5rem auto 0;
+		text-align: center;
 	}
 
 	@media (min-width: 900px) {
 		.hero__inner {
-			grid-template-columns: 0.92fr 1.08fr;
-			gap: 1.25rem;
+			/* La colonne visuelle est calée sur la largeur de l'illustration :
+			   avec une fraction, le texte se serait resserré pour rien. */
+			grid-template-columns: 1fr minmax(0, 480px);
+			gap: 1.75rem;
+		}
+
+		.hero__visual {
+			order: 0;
+			justify-self: end;
+			width: 100%;
+			max-width: 480px;
 		}
 
 		.hero :global(.hero__illus) {
-			order: 0;
 			width: 100%;
-			max-width: 620px;
-			justify-self: end;
 		}
-	}
 
-	/* Les cercles décoratifs vivent dans un calque rogné : laissés libres, ils
-	   élargiraient le document et créeraient un défilement horizontal. */
-	.decor {
-		position: absolute;
-		inset: 0;
-		overflow: hidden;
-		pointer-events: none;
-		z-index: -1;
-	}
-
-	/* Positions relevées sur la charte : un cercle lavande derrière
-	   l'illustration, un second sous le bloc de texte. */
-	.hero__blob--bas {
-		inset-block-end: -38%;
-		inset-inline-start: 24%;
-		width: 26%;
+		.hero :global(.hero__note) {
+			position: absolute;
+			inset-block-start: 4%;
+			inset-inline-end: -1rem;
+			max-width: 11ch;
+			margin: 0;
+			text-align: start;
+		}
 	}
 
 	.histoire {
@@ -278,38 +295,46 @@ const enBref = [
 		padding-block-start: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);
 	}
 
-	/* Le gros cercle qui déborde du bord gauche, au niveau de « Notre histoire ». */
-	.histoire__blob {
-		inset-block-start: 12%;
-		inset-inline-start: -14%;
-		width: 26%;
-	}
-
-	.histoire__lien {
-		margin-top: 0.5rem;
-	}
-
 	.valeurs {
 		position: relative;
 		padding-block-start: clamp(1.25rem, 1rem + 1.2vw, 2rem);
 	}
 
-	.valeurs :global(.valeurs__illus) {
-		width: 88px;
-		height: 88px;
-		margin-bottom: 0.6rem;
+	.values__cards {
+		display: grid;
+		gap: 0.9rem;
 	}
 
-	.valeurs__blob--droite {
-		inset-block-start: -8%;
-		inset-inline-end: -8%;
-		width: 34%;
+	/* Sans picto, la carte tient sur son titre et un filet vertical, qui
+	   remplace la bordure gauche pour ne pas doubler le trait. */
+	.values__card {
+		position: relative;
+		padding-inline-start: 1.6rem;
+		overflow: hidden;
 	}
 
-	.valeurs__blob--gauche {
-		inset-block-end: -18%;
-		inset-inline-start: -10%;
-		width: 22%;
+	.values__card::before {
+		content: '';
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: 0;
+		width: 4px;
+		background: linear-gradient(180deg, var(--bb-plum-500), var(--bb-orange));
+		opacity: 0.45;
+		transition: opacity 0.18s ease;
+	}
+
+	.values__card:hover::before {
+		opacity: 1;
+	}
+
+	.values__card h3 {
+		margin-bottom: 0.3rem;
+	}
+
+	.values__card p {
+		margin-bottom: 0;
+		font-size: 0.95rem;
 	}
 
 	.split {
@@ -336,7 +361,14 @@ const enBref = [
 	.facts dl {
 		margin: 0;
 		display: grid;
-		gap: 0.95rem;
+	}
+
+	/* Un filet entre chaque entrée : sans lui les quatre lignes flottent dans le
+	   panneau. Le premier bord serait collé au haut de la carte, d'où le `+`. */
+	.facts__row + .facts__row {
+		border-block-start: 1px solid var(--bb-border);
+		margin-block-start: 0.9rem;
+		padding-block-start: 0.9rem;
 	}
 
 	.facts__row {
@@ -366,27 +398,19 @@ const enBref = [
 		color: var(--bb-plum-900);
 	}
 
-	/* La note manuscrite déborde à droite des cartes, comme sur la charte. */
-	.values {
-		position: relative;
+	/* La note vit sous la vidéo : centrée au milieu du bloc, elle tombait dans
+	   la gouttière entre les deux colonnes. */
+	.values__media {
+		display: grid;
+		gap: 1.25rem;
+		align-content: start;
 	}
 
 	.values :global(.values__note) {
 		display: block;
-		margin: 1.5rem auto 0;
+		justify-self: center;
 		max-width: 20ch;
 		text-align: center;
-	}
-
-	@media (min-width: 1280px) {
-		.values :global(.values__note) {
-			position: absolute;
-			inset-block-start: 1.25rem;
-			inset-inline-start: calc(100% - 1.5rem);
-			width: 10ch;
-			margin: 0;
-			text-align: start;
-		}
 	}
 
 	.actus-head {
